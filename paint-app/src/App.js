@@ -1,25 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import Canvas from "./components/canvas";
+import Toolbar from "./components/toolbar";
+import ShapeMenu from "./components/shapemenu";
 
-function App() {
+const App = () => {
+  const [selectedShape, setSelectedShape] = useState(null);
+
+  const handleShapeSelect = (shapeType) => {
+    setSelectedShape(shapeType);
+  };
+
+  const handleShapeAction = (actionType) => {
+    // Example: Actions like Delete, Resize, etc., can be handled here.
+    console.log(`Performing action: ${actionType} on ${selectedShape}`);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Toolbar onShapeSelect={handleShapeSelect} />
+      <Canvas selectedShape={selectedShape} />
+      {selectedShape && (
+        <ShapeMenu
+          selectedShape={selectedShape}
+          onAction={handleShapeAction}
+        />
+      )}
     </div>
   );
-}
+};
 
 export default App;
