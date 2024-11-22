@@ -1,32 +1,21 @@
-import React, { useState } from "react";
-import Canvas from "./components/canvas";
-import Toolbar from "./components/toolbar";
-import ShapeMenu from "./components/shapemenu";
+// src/App.js
+import React, { useState } from 'react';
+import Toolbar from './components/Toolbar';
+import ShapeMenu from './components/Shapemenu.';
+import Canvas from './components/Canvas';
+import './App.css';
 
-const App = () => {
+function App() {
+  const [shapes, setShapes] = useState([]);
   const [selectedShape, setSelectedShape] = useState(null);
 
-  const handleShapeSelect = (shapeType) => {
-    setSelectedShape(shapeType);
-  };
-
-  const handleShapeAction = (actionType) => {
-    // Example: Actions like Delete, Resize, etc., can be handled here.
-    console.log(`Performing action: ${actionType} on ${selectedShape}`);
-  };
-
   return (
-    <div className="App">
-      <Toolbar onShapeSelect={handleShapeSelect} />
-      <Canvas selectedShape={selectedShape} />
-      {selectedShape && (
-        <ShapeMenu
-          selectedShape={selectedShape}
-          onAction={handleShapeAction}
-        />
-      )}
+    <div className="app-container">
+      <Toolbar setShapes={setShapes} shapes={shapes} />
+      <ShapeMenu setSelectedShape={setSelectedShape} />
+      <Canvas shapes={shapes} setShapes={setShapes} selectedShape={selectedShape} />
     </div>
   );
-};
+}
 
 export default App;
