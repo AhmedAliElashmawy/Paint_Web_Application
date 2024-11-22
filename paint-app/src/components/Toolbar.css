@@ -10,6 +10,23 @@
     align-items: center;
 }
 
+.line-width-menu {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right:auto;
+}
+
+.line-width-menu label {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.line-width-menu select {
+    padding: 5px;
+    font-size: 14px;
+}
+
 .buttons {
     display: flex;
     gap: 10px;

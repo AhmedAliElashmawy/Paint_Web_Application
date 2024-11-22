@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Toolbar.css";
 
 const ColorOptions = ({ colors }) => (
@@ -28,7 +28,26 @@ const ButtonGroup = ({ buttons }) => (
     </div>
 );
 
+const LineWidthMenu = ({ lineWidths, selectedWidth, onChange }) => (
+    <div className="line-width-menu">
+        <label htmlFor="line-width">Line Width:</label>
+        <select
+            id="line-width"
+            value={selectedWidth}
+            onChange={(e) => onChange(e.target.value)}
+        >
+            {lineWidths.map((width, index) => (
+                <option key={index} value={width}>
+                    {width}px
+                </option>
+            ))}
+        </select>
+    </div>
+);
+
 const Toolbar = () => {
+    const [selectedWidth, setSelectedWidth] = useState(1); // Default line width
+
     const row1Buttons = [
         "Clear",
         "Save",
@@ -40,6 +59,7 @@ const Toolbar = () => {
         "Line",
         "Rectangle",
         "Oval",
+        "divider",
     ];
 
     const row2Buttons = [
@@ -53,15 +73,27 @@ const Toolbar = () => {
         "Curve",
         "Polygon",
         "Rounded Rectangle",
+        "divider",
+        "Outline only",
+        "Fill only",
+        "Outline and fill",
     ];
 
     const row1Colors = ["black", "red", "green", "blue", "yellow"];
     const row2Colors = ["purple", "orange", "pink", "cyan", "lime"];
+
+    const lineWidths = [1, 2, 4, 8, 16]; // Available line widths
+
     return (
         <div className="toolbar">
             {/* Row 1 */}
             <div className="row">
                 <ButtonGroup buttons={row1Buttons} />
+                <LineWidthMenu
+                    lineWidths={lineWidths}
+                    selectedWidth={selectedWidth}
+                    onChange={(width) => setSelectedWidth(Number(width))}
+                />
                 <ColorOptions colors={row1Colors} />
             </div>
             {/* Row 2 */}
