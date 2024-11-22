@@ -7,11 +7,11 @@ body {
 .toolbar {
   display: flex;
   justify-content: space-around;
-  background: #f4f4f4;
+  background: #d4f4f4;
   padding: 10px;
 }
 
 .canvas {
   margin: 10px auto;
-  border: 1px solid #ccc;
+  border: 1px solid #ffffff;
 }
