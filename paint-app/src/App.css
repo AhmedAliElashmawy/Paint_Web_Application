@@ -10,6 +10,14 @@
   gap: 10px;
   background-color: #f1f1f1;
   padding: 10px;
+  height: 100px;
+}
+
+.toolbox {
+  display: flex;
+  /* gap: 10px; */
+  background-color: #f1f1f1;
+  padding: 10px;
 }
 
 .shape-menu {
@@ -22,3 +30,15 @@
 canvas {
   flex-grow: 1;
 }
+
+.divider {
+  display: inline-block;
+  vertical-align: top;
+  padding: 0;
+  width: 1px;
+}
+#toolbar .divider {
+  height: 100px;
+  margin: 10px 4px;
+}
+
