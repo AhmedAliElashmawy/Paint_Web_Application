@@ -22,8 +22,8 @@ const Canvas = ({ shapes, setShapes, selectedShape }) => {
 
   return (
     <Stage
-      width={window.innerWidth}
-      height={window.innerHeight}
+      width={100}
+      height={800}
       onClick={handleCanvasClick}
       style={{ border: '1px solid black' }}
     >

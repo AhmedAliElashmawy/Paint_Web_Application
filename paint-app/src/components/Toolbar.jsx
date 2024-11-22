@@ -57,8 +57,8 @@ const LineWidthMenu = ({ lineWidths, selectedWidth, onChange }) => (
 );
 
 const Toolbar = () => {
-    const [selectedWidth, setSelectedWidth] = useState(1); // Default line width
-    const [selectedColor, setSelectedColor] = useState("#000000"); // Default color
+    const [selectedWidth, setSelectedWidth] = useState(1);
+    const [selectedColor, setSelectedColor] = useState("#000000");
 
     const row1Buttons = [
         { id: 1, label: "Clear", icon: "/icons/clear.webp" },
@@ -134,7 +134,7 @@ const Toolbar = () => {
             {/* Row 2 */}
             <div className="row">
                 <ButtonGroup buttons={row2Buttons} />
-                <ColorOptions colors={row2Colors} />
+                <ColorOptions colors={row2Colors} onColorSelect={handleColorSelect} />
             </div>
         </div>
     );

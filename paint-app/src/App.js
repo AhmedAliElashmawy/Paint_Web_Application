@@ -1,7 +1,7 @@
 // src/App.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Toolbar from './components/Toolbar';
-import ShapeMenu from './components/Shapemenu.';
+import Bottombar from './components/Bottombar';
 import Canvas from './components/Canvas';
 import './App.css';
 
@@ -11,9 +11,9 @@ function App() {
 
   return (
     <div className="app-container">
-      <Toolbar setShapes={setShapes} shapes={shapes} />
-      <ShapeMenu setSelectedShape={setSelectedShape} />
+      <Toolbar/>
       <Canvas shapes={shapes} setShapes={setShapes} selectedShape={selectedShape} />
+      <Bottombar/>
     </div>
   );
 }
