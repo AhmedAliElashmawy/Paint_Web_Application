@@ -107,3 +107,7 @@
 .big-color-input:focus + .big-color-button {
     outline: 2px solid #007BFF;
 }
+
+.spacer {
+    flex-grow: 1;
+}

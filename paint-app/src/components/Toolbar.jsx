@@ -114,7 +114,6 @@ const Toolbar = () => {
                     selectedWidth={selectedWidth}
                     onChange={(width) => setSelectedWidth(Number(width))}
                 />
-                <ColorOptions colors={row1Colors} onColorSelect={handleColorSelect} />
                 <div className="color-picker-container">
                     <button
                         className="big-color-button"
@@ -130,6 +129,7 @@ const Toolbar = () => {
                         onChange={(e) => handleBigColorChange(e.target.value)}
                     />
                 </div>
+                <ColorOptions colors={row1Colors} onColorSelect={handleColorSelect} />
             </div>
             {/* Row 2 */}
             <div className="row">
