@@ -20,13 +20,22 @@ const ButtonGroup = ({ buttons }) => (
             button === "divider" ? (
                 <div key={index} className="divider"></div>
             ) : (
-                <button key={index} title={button}>
-                    {button}
+                <button key={index} title={button.label || button}>
+                    {button.icon ? (
+                        <img
+                            src={button.icon}
+                            alt={button.label}
+                            className="button-icon"
+                        />
+                    ) : (
+                        button
+                    )}
                 </button>
             )
         )}
     </div>
 );
+
 
 const LineWidthMenu = ({ lineWidths, selectedWidth, onChange }) => (
     <div className="line-width-menu">
@@ -49,18 +58,16 @@ const Toolbar = () => {
     const [selectedWidth, setSelectedWidth] = useState(1); // Default line width
 
     const row1Buttons = [
-        "Clear",
-        "Save",
-        "Copy",
-        "divider",
-        "Eraser",
-        "Pencil",
-        "Airbrush",
-        "Line",
-        "Rectangle",
-        "Oval",
-        "divider",
-    ];
+        { id: 1, label: "Clear", icon: "/icons/clear.webp" },
+        { id: 2, label: "Save", icon: "/icons/save.jpg" },
+        { id: 3, label: "Copy", icon: "/icons/copy.webp" },
+        { id: 4, label: "Eraser", icon: "/icons/eraser.png" },
+        { id: 5, label: "Pencil", icon: "/icons/pencil.jpg" },
+        { id: 6, label: "Airbrush", icon: "/icons/airbrush.png" },
+        { id: 7, label: "Line", icon: "/icons/line.png" },
+        { id: 8, label: "Rectangle", icon: "/icons/rectangle.png" },
+        { id: 9, label: "Oval", icon: "/icons/oval.jpg" },
+      ];
 
     const row2Buttons = [
         "Undo",
