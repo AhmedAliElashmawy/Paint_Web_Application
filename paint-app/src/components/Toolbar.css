@@ -24,8 +24,38 @@
 .buttons {
     display: flex;
     align-items: center;
-    gap: 10px; /* Spacing between buttons */
+    gap: 8px; /* Slightly smaller spacing between buttons */
+    padding: 0; /* Remove padding around the button container */
+    background-color: transparent; /* Make the container background transparent */
+    box-shadow: none; /* Remove container shadow to make it more minimal */
 }
+
+.buttons button {
+    background-color: #fff; /* White background for buttons */
+    border: 2px solid #ddd; /* Subtle border for buttons */
+    border-radius: 4px; /* Rounded button edges */
+    padding: 6px 10px; /* Smaller padding for more compact buttons */
+    font-size: 12px; /* Smaller font size */
+    cursor: pointer; /* Indicate interactivity */
+    transition: all 0.3s ease; /* Smooth transition for hover effect */
+    display: inline-flex; /* Ensure buttons stay inline */
+    justify-content: center;
+    align-items: center;
+}
+
+.buttons button:hover {
+    background-color: #2c2b2b; /* Light hover effect */
+    border-color: #ccc; /* Darker border on hover */
+    transform: scale(1.05); /* Slight scale effect for emphasis */
+}
+
+.buttons button:active {
+    background-color: #e0e0e0; /* Darker background when clicked */
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1); /* Inset shadow for click effect */
+}
+
+
+
 
 .divider {
     width: 2px; /* Thickness of the divider */
