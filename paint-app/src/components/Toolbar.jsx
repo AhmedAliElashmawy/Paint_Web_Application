@@ -68,9 +68,12 @@ const Toolbar = () => {
         { id: 4, label: "Eraser", icon: "/icons/eraser.svg" },
         { id: 5, label: "Pencil", icon: "/icons/pencil.svg" },
         { id: 6, label: "Airbrush", icon: "/icons/airbrush.png" },
+<<<<<<< Updated upstream
         { id: 7, label: "Line", icon: "/icons/line.svg" },
         { id: 8, label: "Rectangle", icon: "/icons/rectangle.svg" },
         { id: 9, label: "Ellipse", icon: "/icons/ellipse.svg" },
+=======
+>>>>>>> Stashed changes
         "divider",
       ];
 
@@ -79,17 +82,38 @@ const Toolbar = () => {
         { id: 11, label: "Redo" , icon: "/icons/redo.svg" },
         { id: 12, label: "Paste" , icon: "/icons/paste.svg"},
         "divider",
+<<<<<<< Updated upstream
         { id: 13, label: "Flood fill"  },
         { id: 14, label: "Brush" , icon: "/icons/brush.svg"},
         { id: 15, label: "Text" , icon: "/icons/text.svg" },
         { id: 16, label: "Curve" , icon: "/icons/curve.svg"},
         { id: 17, label: "Polygon" , icon: "/icons/polygon.svg"},
         { id: 18, label: "Rounded Rectangle" },
+=======
+        { id: 13, label: "Flood fill" },
+        { id: 14, label: "Brush" },
+        { id: 15, label: "Text" },
+>>>>>>> Stashed changes
         "divider",
         { id: 19, label: "Outline only" },
         { id: 20, label: "Fill only" },
         { id: 21, label: "Outline and fill" },
     ];
+
+    const shapes = [
+        { id: "line", label: "Line", icon: "━" },
+        { id: "curve", label: "Curve", icon: "〰" },
+        { id: "rectangle", label: "Rectangle", icon: "▭" },
+        { id: "roundedRectangle", label: "Rounded Rectangle", icon: "⬛" },
+        { id: "ellipse", label: "Ellipse", icon: "⬤" },
+        { id: "triangle", label: "Triangle", icon: "▲" },
+        { id: "diamond", label: "Diamond", icon: "◆" },
+        { id: "pentagon", label: "Pentagon", icon: "⬟" },
+        { id: "hexagon", label: "Hexagon", icon: "⬢" },
+        { id: "arrow", label: "Arrow", icon: "➔" },
+        { id: "star", label: "Star", icon: "★" },
+        { id: "heart", label: "Heart", icon: "❤" },
+      ];
 
     const row1Colors = ["black", "red", "green", "blue", "yellow"];
     const row2Colors = ["purple", "orange", "pink", "cyan", "lime"];
@@ -114,6 +138,19 @@ const Toolbar = () => {
                     selectedWidth={selectedWidth}
                     onChange={(width) => setSelectedWidth(Number(width))}
                 />
+                <div style={styles.container}>
+                <div style={styles.grid}>
+                    {shapes.map((shape) => (
+                    <button
+                        key={shape.id}
+                        style={styles.button}
+                        title={shape.label}
+                    >
+                        {shape.icon}
+                    </button>
+                    ))}
+                </div>
+                </div>
                 <div className="color-picker-container">
                     <button
                         className="big-color-button"
@@ -135,9 +172,30 @@ const Toolbar = () => {
             <div className="row">
                 <ButtonGroup buttons={row2Buttons} />
                 <ColorOptions colors={row2Colors} onColorSelect={handleColorSelect} />
-            </div>
+                    </div>
         </div>
     );
 };
-
+const styles = {
+    container: {
+      padding: "10px",
+      borderRight: "1px solid gray",
+      backgroundColor: "#f0f0f0",
+    },
+    grid: {
+      display: "grid",
+      gridTemplateColumns: "repeat(4, 10px)",
+      gap: "10px",
+    },
+    button: {
+      width: "10px",
+      height: "10px",
+      border: "1px solid #ccc",
+      borderRadius: "4px",
+      backgroundColor: "white",
+      fontSize: "5px",
+      textAlign: "center",
+      cursor: "pointer",
+    },
+  };
 export default Toolbar;

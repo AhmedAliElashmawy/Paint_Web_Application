@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Toolbar from './components/Toolbar';
 import Bottombar from './components/Bottombar';
 import Canvas from './components/Canvas';
+import Shapemenue from './components/Shapemenu.';
 import './App.css';
 
 function App() {
