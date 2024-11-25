@@ -68,12 +68,9 @@ const Toolbar = () => {
         { id: 4, label: "Eraser", icon: "/icons/eraser.svg" },
         { id: 5, label: "Pencil", icon: "/icons/pencil.svg" },
         { id: 6, label: "Airbrush", icon: "/icons/airbrush.png" },
-<<<<<<< Updated upstream
         { id: 7, label: "Line", icon: "/icons/line.svg" },
-        { id: 8, label: "Rectangle", icon: "/icons/rectangle.svg" },
+        { id: 8, label: "Circle", icon: "" },
         { id: 9, label: "Ellipse", icon: "/icons/ellipse.svg" },
-=======
->>>>>>> Stashed changes
         "divider",
       ];
 
@@ -82,18 +79,12 @@ const Toolbar = () => {
         { id: 11, label: "Redo" , icon: "/icons/redo.svg" },
         { id: 12, label: "Paste" , icon: "/icons/paste.svg"},
         "divider",
-<<<<<<< Updated upstream
         { id: 13, label: "Flood fill"  },
         { id: 14, label: "Brush" , icon: "/icons/brush.svg"},
         { id: 15, label: "Text" , icon: "/icons/text.svg" },
-        { id: 16, label: "Curve" , icon: "/icons/curve.svg"},
-        { id: 17, label: "Polygon" , icon: "/icons/polygon.svg"},
-        { id: 18, label: "Rounded Rectangle" },
-=======
-        { id: 13, label: "Flood fill" },
-        { id: 14, label: "Brush" },
-        { id: 15, label: "Text" },
->>>>>>> Stashed changes
+        { id: 16, label: "Triangle" , icon: ""},
+        { id: 17, label: "Square" , icon: ""},
+        { id: 8, label: "Rectangle", icon: "/icons/rectangle.svg" },
         "divider",
         { id: 19, label: "Outline only" },
         { id: 20, label: "Fill only" },
@@ -138,7 +129,7 @@ const Toolbar = () => {
                     selectedWidth={selectedWidth}
                     onChange={(width) => setSelectedWidth(Number(width))}
                 />
-                <div style={styles.container}>
+                {/* <div style={styles.container}>
                 <div style={styles.grid}>
                     {shapes.map((shape) => (
                     <button
@@ -150,7 +141,7 @@ const Toolbar = () => {
                     </button>
                     ))}
                 </div>
-                </div>
+                </div> */}
                 <div className="color-picker-container">
                     <button
                         className="big-color-button"

@@ -11,9 +11,7 @@
 .toolbar {
   display: flex;
   flex-direction: column;
-  gap: 10px;
   background-color:  #3b4b68;
-  padding: 10px;
   height: 100px;
   color: white;
 }
