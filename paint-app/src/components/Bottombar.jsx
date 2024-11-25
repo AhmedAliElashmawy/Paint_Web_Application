@@ -48,6 +48,12 @@ const Bottombar = () => {
 
   return (
     <div className="bottombar">
+      <button className="clear">
+        <img
+            src="/icons/clear.svg"
+            alt="clear"
+        />
+      </button>
         <div className="corrdinates">
             X: {mousePosition.x}, Y: {mousePosition.y}
         </div>

@@ -1,11 +1,30 @@
-.row {
-    display: flex;
-    justify-content: space-between;
+.toolbox {
+    display: inline-block;
+    vertical-align: top;
+    margin: 0px;
+    flex-direction: column;
     align-items: center;
-}
+    justify-content: center;
+    height: 100px;
+    color: white;
+  }
+
+  .toolcolorsbox{
+    display: flex;
+    vertical-align: top;
+    margin: 0px;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+    padding-left: 10px;
+    padding-bottom: 10px;
+        justify-content: flex-end; /* Pushes all content to the right */
+        padding-right: 10px; /* Optional: adds spacing on the right */
+  }
 
 .line-width-menu {
     display: flex;
+    justify-content: center;
     align-items: center;
     gap: 10px;
     margin-right:auto;
@@ -59,9 +78,34 @@
 
 .divider {
     width: 2px; /* Thickness of the divider */
-    height: 100%; /* Match the button height */
-    background-color: #000000; /* Divider color */
+    height: 100px; /* Match the button height */
     margin: 0 10px; /* Space around the divider */
+    background-color: white; /* Divider color */
+    display: inline-block;
+    vertical-align: top;
+    padding: 0;
+    clip-path: inset(0 0 10px 0);
+}
+
+.container {
+    clip-path: inset(0 0 10px 0);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(10, 10px);
+    gap: 10px;
+}
+
+.button {
+    width: 10px;
+    height: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 5px;
+    text-align: center;
+    cursor: pointer;
 }
 
 
@@ -77,6 +121,8 @@
 }
 
 .color-circle {
+    align-items: center;
+    justify-content: center;
     width: 20px;
     height: 20px;
     border-radius: 50%;
@@ -90,8 +136,10 @@
 }
 
 .color-picker-container {
+    justify-content: flex-end; /* Pushes all content to the right */
+    margin-left: auto;
     position: relative;
-    display: inline-block;
+    display: flex;
 }
 
 /* Styled Big Color Button */

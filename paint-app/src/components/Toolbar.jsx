@@ -60,35 +60,46 @@ const Toolbar = () => {
     const [selectedWidth, setSelectedWidth] = useState(1);
     const [selectedColor, setSelectedColor] = useState("#000000");
 
-    const row1Buttons = [
-        { id: 1, label: "Clear", icon: "/icons/clear.svg" },
+    const menu1Buttons = [
         { id: 2, label: "Save", icon: "/icons/save.svg" },
+        { id: 1, label: "Load", icon: "" },
         { id: 3, label: "Copy", icon: "/icons/copy.svg" },
-        "divider",
-        { id: 4, label: "Eraser", icon: "/icons/eraser.svg" },
-        { id: 5, label: "Pencil", icon: "/icons/pencil.svg" },
-        { id: 6, label: "Airbrush", icon: "/icons/airbrush.png" },
-        { id: 7, label: "Line", icon: "/icons/line.svg" },
-        { id: 8, label: "Circle", icon: "" },
-        { id: 9, label: "Ellipse", icon: "/icons/ellipse.svg" },
-        "divider",
-      ];
-
-      const row2Buttons = [
+        // { id: 7, label: "Line", icon: "/icons/line.svg" },
+        // { id: 8, label: "Circle", icon: "" },
+        // { id: 9, label: "Ellipse", icon: "/icons/ellipse.svg" },
+        // "divider",
+    ];
+    
+    const menu2Buttons = [
         { id: 10, label: "Undo" , icon: "/icons/undo.svg"},
         { id: 11, label: "Redo" , icon: "/icons/redo.svg" },
         { id: 12, label: "Paste" , icon: "/icons/paste.svg"},
-        "divider",
+    ]
+
+    const menu3Buttons = [
+        { id: 4, label: "Eraser", icon: "/icons/eraser.svg" },
+        { id: 5, label: "Pencil", icon: "/icons/pencil.svg" },
+        { id: 6, label: "Airbrush", icon: "/icons/airbrush.png" },
+        ]
+
+    const menu4Buttons = [
         { id: 13, label: "Flood fill"  },
         { id: 14, label: "Brush" , icon: "/icons/brush.svg"},
         { id: 15, label: "Text" , icon: "/icons/text.svg" },
+        ]
+
+    const menu5Buttons = [
+        { id: 19, label: "Outline only" },
+        { id: 20, label: "Fill only" },
+        { id: 21, label: "Outline and fill" },
+        ]
+
+      const row2Buttons = [
+        "divider",
         { id: 16, label: "Triangle" , icon: ""},
         { id: 17, label: "Square" , icon: ""},
         { id: 8, label: "Rectangle", icon: "/icons/rectangle.svg" },
         "divider",
-        { id: 19, label: "Outline only" },
-        { id: 20, label: "Fill only" },
-        { id: 21, label: "Outline and fill" },
     ];
 
     const shapes = [
@@ -120,73 +131,91 @@ const Toolbar = () => {
     };
 
     return (
-        <div className="toolbar">
-            {/* Row 1 */}
-            <div className="row">
-                <ButtonGroup buttons={row1Buttons} />
-                <LineWidthMenu
-                    lineWidths={lineWidths}
-                    selectedWidth={selectedWidth}
-                    onChange={(width) => setSelectedWidth(Number(width))}
-                />
-                {/* <div style={styles.container}>
-                <div style={styles.grid}>
-                    {shapes.map((shape) => (
-                    <button
-                        key={shape.id}
-                        style={styles.button}
-                        title={shape.label}
-                    >
-                        {shape.icon}
-                    </button>
-                    ))}
-                </div>
-                </div> */}
-                <div className="color-picker-container">
-                    <button
-                        className="big-color-button"
-                        style={{ backgroundColor: selectedColor }}
-                        title="Pick any color"
-                    >
-                        <span className="big-color-label">+</span>
-                    </button>
-                    <input
-                        type="color"
-                        className="big-color-input"
-                        value={selectedColor}
-                        onChange={(e) => handleBigColorChange(e.target.value)}
-                    />
-                </div>
-                <ColorOptions colors={row1Colors} onColorSelect={handleColorSelect} />
+        <div className="topbar">
+            <div className="toolbox">
+                    <ButtonGroup buttons={menu1Buttons} />
+                    <br />
+                    <ButtonGroup buttons={menu2Buttons} />
             </div>
-            {/* Row 2 */}
-            <div className="row">
-                <ButtonGroup buttons={row2Buttons} />
+            <span className="divider"></span>
+            <div className="toolbox">
+                    <ButtonGroup buttons={menu3Buttons} />
+                    <br />
+                    <ButtonGroup buttons={menu4Buttons} />
+            </div>
+            <span className="divider"></span>
+            <div style={styles.container}>
+              <div style={styles.grid}>
+              {shapes.map((shape) => (
+                  <button
+                  key={shape.id}
+                  style={styles.button}
+                  title={shape.label}
+                  >
+                      {shape.icon}
+                      </button>
+                  ))}
+                  </div>
+                  </div>
+                  <span className="divider"></span>
+                  <div className="toolbox">
+                  <LineWidthMenu
+                    lineWidths={lineWidths}
+                      selectedWidth={selectedWidth}
+                      onChange={(width) => setSelectedWidth(Number(width))}
+                  />
+                  <br/>
+                  <ButtonGroup buttons={menu5Buttons} />
+                  </div>
+                  <div className="color-picker-container">
+                      <button
+                          className="big-color-button"
+                          style={{ backgroundColor: selectedColor }}
+                          title="Pick any color"
+                      >
+                          <span className="big-color-label">+</span>
+                      </button>
+                      <input
+                          type="color"
+                          className="big-color-input"
+                          value={selectedColor}
+                          onChange={(e) => handleBigColorChange(e.target.value)}
+                          />
+                  </div>
+                  <div className="toolcolorsbox">
+                <ColorOptions colors={row1Colors} onColorSelect={handleColorSelect} />
+                    <br />
                 <ColorOptions colors={row2Colors} onColorSelect={handleColorSelect} />
-                    </div>
+            </div>
         </div>
-    );
-};
+        );
+        };
+
 const styles = {
     container: {
-      padding: "10px",
-      borderRight: "1px solid gray",
-      backgroundColor: "#f0f0f0",
+        height: "80px",
+        padding: "10px",
+        borderRight: "1px solid gray",
+        backgroundColor: "#f0f0f0",
+        clipPath: "inset(0 0 10px 0)",
     },
     grid: {
-      display: "grid",
-      gridTemplateColumns: "repeat(4, 10px)",
-      gap: "10px",
+        display: "grid",
+        gridTemplateColumns: "repeat(10, 35px)",
+        gap: "15px",
     },
     button: {
-      width: "10px",
-      height: "10px",
-      border: "1px solid #ccc",
-      borderRadius: "4px",
-      backgroundColor: "white",
-      fontSize: "5px",
-      textAlign: "center",
-      cursor: "pointer",
+        width: "30px",
+        height: "30px",
+        border: "1px solid #ccc",
+        borderRadius: "4px",
+        backgroundColor: "white",
+        fontSize: "13px",
+        textAlign: "center",
+        cursor: "pointer",
     },
-  };
-export default Toolbar;
+};
+
+
+      export default Toolbar;
+      

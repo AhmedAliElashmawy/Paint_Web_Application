@@ -8,23 +8,34 @@
   background-color: #f4f4f4; /* Light background color */
 }
 
-.toolbar {
-  display: flex;
-  flex-direction: column;
+.topbar {
   background-color:  #3b4b68;
-  height: 100px;
-  color: white;
+  padding: 0;
+    white-space: nowrap;
+    overflow-x: auto;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    padding-right: 10px;
+    padding-left: 10px;
+    padding-top: 10px;
 }
 
 .bottombar{
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Align coordinates on the left */
+  position: fixed;
+  justify-content: space-between; 
   background-color: #3b4b68;
   padding: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   gap: 10px;
   color: white;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
 }
 
 
@@ -36,18 +47,18 @@
 }
 
 
-.toolbar button:hover,
+.topbar button:hover,
 .bottombar button:hover {
     background-color: #2a3a52;
     cursor: pointer;
 }
 
-.toolbar button,
+.topbar button,
 .bottombar button {
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.toolbar button:hover,
+.topbar button:hover,
 .bottombar button:hover {
     transform: scale(1.05);
 }
@@ -75,7 +86,7 @@
 }
 
 
-.toolbar {
+.topbar {
   background-color: var(--toolbar-bg);
 }
 
