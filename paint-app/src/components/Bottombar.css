@@ -1,5 +1,18 @@
 /* Container styling */
-
+.bottombar {
+  position: fixed; /* Fixes the bar to the bottom of the screen */
+  bottom: 0; /* Aligns it to the bottom */
+  left: 0; /* Aligns it to the left edge */
+  width: 100%; /* Stretches the bar across the screen */
+  background-color: #333; /* Background color for better visibility */
+  color: white; /* Text color */
+  padding: 10px; /* Adds some spacing */
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow above the bar */
+  display: flex; /* Aligns items horizontally */
+  justify-content: space-between; /* Distributes items across the bar */
+  align-items: center; /* Aligns items vertically */
+  z-index: 1000; /* Ensures it stays above other content */
+}
 .zoom-toolbottom {
     display: flex;
     align-items: center;
