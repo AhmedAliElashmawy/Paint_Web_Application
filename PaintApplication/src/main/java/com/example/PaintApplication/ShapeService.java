@@ -110,4 +110,9 @@ public class ShapeService {
         undoStack.push(deepCopy);
         redoStack.clear();
     }
+    public void loadShapes(List<Shape> shapes) {
+        shapeRepository.deleteAll(); // Clear the current repository
+        shapeRepository.saveAll(shapes); // Save the loaded shapes
+    }
+    
 }
