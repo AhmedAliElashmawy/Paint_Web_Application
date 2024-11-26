@@ -5,7 +5,7 @@ import Bottombar from './components/Bottombar';
 import Canvas from './components/Canvas';
 import Shapemenue from './components/Shapemenu.';
 import './App.css';
-
+import './services/api.js'
 function App() {
   const [shapes, setShapes] = useState([]);
   const [selectedShape, setSelectedShape] = useState(null);
