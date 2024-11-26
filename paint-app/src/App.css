@@ -5,11 +5,11 @@
   height: 100vh;
   width: 100vw;
   overflow: hidden;
-  background-color: #f4f4f4; /* Light background color */
+  background-color: #f4f4f4;
 }
 
 .topbar {
-  background-color:  #3b4b68;
+  background-color:  black;
   padding: 0;
     white-space: nowrap;
     overflow-x: auto;
@@ -26,7 +26,7 @@
   align-items: center;
   position: fixed;
   justify-content: space-between; 
-  background-color: #3b4b68;
+  background-color: black;
   padding: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   gap: 10px;
@@ -41,7 +41,6 @@
 
 .Canvas {
   flex: 1; /* Fill available space */
-  background-color: white;
   border: 1px solid #ccc;
   overflow: hidden; /* Prevent overflow inside the Canvas */
 }
@@ -49,8 +48,8 @@
 
 .topbar button:hover,
 .bottombar button:hover {
-    background-color: #2a3a52;
-    cursor: pointer;
+  background-color: var(--buttons-color);
+  cursor: pointer;
 }
 
 .topbar button,
@@ -73,16 +72,18 @@
   --toolbar-bg: #3b4b68;
   --canvas-bg: #fff;
   --bottombar-bg: #3b4b68;
+  --buttons-color:#3b4b68;
 }
 
 /* Dark Theme */
 [data-theme="dark"] {
   --background: #333;
   --text-color: #f4f4f4;
-  --accent-color: #1f2a40;
-  --toolbar-bg: #1f2a40;
+  --accent-color: #212121;
+  --toolbar-bg: #212121;
   --canvas-bg: #444;
-  --bottombar-bg: #1f2a40;
+  --bottombar-bg: #212121;
+  --buttons-color:#282828;
 }
 
 
@@ -94,7 +95,7 @@
   background-color: var(--bottombar-bg);
 }
 
-.Canvas {
+.konvajs-content {
   background-color: var(--canvas-bg);
 }
 

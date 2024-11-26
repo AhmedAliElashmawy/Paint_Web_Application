@@ -49,11 +49,9 @@ margin-right: auto;
 
   /* Zoom buttons */
   .zoom-btn {
-    background: none;
-    color: white;
+    background-color: #fff;
     font-size: 18px;
-    border: 1px solid #444;
-    border-radius: 4px;
+    border: 2px solid #ddd;    border-radius: 4px;
     width: 30px;
     height: 30px;
     cursor: pointer;

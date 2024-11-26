@@ -22,7 +22,7 @@ const Canvas = ({ shapes, setShapes, selectedShape }) => {
 
   return (
     <Stage
-      width={100}
+      width={1919}
       height={800}
       onClick={handleCanvasClick}
       style={{ border: '1px solid black' }}
