@@ -1,0 +1,15 @@
+com\example\PaintApplication\EllipticalShape.class
+com\example\PaintApplication\Square.class
+com\example\PaintApplication\ShapeService.class
+com\example\PaintApplication\Polygon.class
+com\example\PaintApplication\Rectangle.class
+com\example\PaintApplication\Sketch.class
+com\example\PaintApplication\Circle.class
+com\example\PaintApplication\ShapeController.class
+com\example\PaintApplication\ShapeRepository.class
+com\example\PaintApplication\LineSegment.class
+com\example\PaintApplication\Shape.class
+com\example\PaintApplication\Triangle.class
+com\example\PaintApplication\Ellipse.class
+com\example\PaintApplication\PaintApplication.class
+com\example\PaintApplication\SketchManager.class
