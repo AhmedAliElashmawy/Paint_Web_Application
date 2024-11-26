@@ -64,10 +64,6 @@ const Toolbar = () => {
         { id: 2, label: "Save", icon: "/icons/save.svg" },
         { id: 1, label: "Load", icon: "" },
         { id: 3, label: "Copy", icon: "/icons/copy.svg" },
-        // { id: 7, label: "Line", icon: "/icons/line.svg" },
-        // { id: 8, label: "Circle", icon: "" },
-        // { id: 9, label: "Ellipse", icon: "/icons/ellipse.svg" },
-        // "divider",
     ];
     
     const menu2Buttons = [
@@ -94,27 +90,10 @@ const Toolbar = () => {
         { id: 21, label: "Outline and fill" },
         ]
 
-      const row2Buttons = [
-        "divider",
-        { id: 16, label: "Triangle" , icon: ""},
-        { id: 17, label: "Square" , icon: ""},
-        { id: 8, label: "Rectangle", icon: "/icons/rectangle.svg" },
-        "divider",
-    ];
-
     const shapes = [
-        { id: "line", label: "Line", icon: "━" },
-        { id: "curve", label: "Curve", icon: "〰" },
-        { id: "rectangle", label: "Rectangle", icon: "▭" },
-        { id: "roundedRectangle", label: "Rounded Rectangle", icon: "⬛" },
-        { id: "ellipse", label: "Ellipse", icon: "⬤" },
-        { id: "triangle", label: "Triangle", icon: "▲" },
-        { id: "diamond", label: "Diamond", icon: "◆" },
-        { id: "pentagon", label: "Pentagon", icon: "⬟" },
-        { id: "hexagon", label: "Hexagon", icon: "⬢" },
-        { id: "arrow", label: "Arrow", icon: "➔" },
-        { id: "star", label: "Star", icon: "★" },
-        { id: "heart", label: "Heart", icon: "❤" },
+        { id: "square", label: "Square", icon: "" },
+        { id: "rectangle", label: "Rectangle", icon: "/icons/rectangle.svg" },
+        { id: "circle", label: "Circle", icon: "" },
       ];
 
     const row1Colors = ["black", "red", "green", "blue", "yellow"];
@@ -152,8 +131,12 @@ const Toolbar = () => {
                   style={styles.button}
                   title={shape.label}
                   >
-                      {shape.icon}
-                      </button>
+                        <img
+                            src={shape.icon}
+                            alt={shape.label}
+                            className="button-icon"
+                        />
+                        </button>
                   ))}
                   </div>
                   </div>
