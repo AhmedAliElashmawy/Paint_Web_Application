@@ -189,7 +189,7 @@ const Toolbar = () => {
             </div>
         </div>
         );
-        };
+    };
 
 const styles = {
     container: {
@@ -216,6 +216,4 @@ const styles = {
     },
 };
 
-
-      export default Toolbar;
-      
+    export default Toolbar;

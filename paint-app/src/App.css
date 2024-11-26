@@ -68,7 +68,7 @@
 /* Default Theme (Light) */
 :root {
   --background: #f4f4f4;
-  --text-color: #333;
+  --text-color: bold;
   --accent-color: #3b4b68;
   --toolbar-bg: #3b4b68;
   --canvas-bg: #fff;
