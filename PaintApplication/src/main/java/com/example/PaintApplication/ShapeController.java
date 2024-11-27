@@ -11,11 +11,14 @@ import java.io.IOException;
 @RequestMapping("/api/shapes")
 public class ShapeController {
 
-    @Autowired
-    private ShapeService shapeService;
+    private final ShapeService shapeService;
+    private final SketchManager sketchManager;
 
     @Autowired
-    private SketchManager sketchManager;
+    public ShapeController(ShapeService shapeService, SketchManager sketchManager) {
+        this.shapeService = shapeService;
+        this.sketchManager = sketchManager;
+    }
 
     @GetMapping
     public List<Shape> getAllShapes() {
