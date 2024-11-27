@@ -1,13 +1,22 @@
-import React from 'react';
+import React from "react";
 
-const ShapeMenu = ({ setSelectedShape }) => {
+const shapes = ["Rectangle", "Circle", "Triangle"];
+
+const Shapemenue = ({ onShapeSelect }) => {
   return (
-    <div className="shape-menu">
-      <button onClick={() => setSelectedShape('circle')}>Circle</button>
-      <button onClick={() => setSelectedShape('rectangle')}>Rectangle</button>
-      <button onClick={() => setSelectedShape('line')}>Line</button>
+    <div style={{ padding: "10px", borderRight: "1px solid gray" }}>
+      <h3>Shapes</h3>
+      {shapes.map((shape) => (
+        <button
+          key={shape}
+          onClick={() => onShapeSelect(shape)}
+          style={{ display: "block", margin: "5px 0" }}
+        >
+          {shape}
+        </button>
+      ))}
     </div>
   );
 };
 
-export default ShapeMenu;
+export default Shapemenue;

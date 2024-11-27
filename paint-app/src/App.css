@@ -3,22 +3,119 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background-color: #f4f4f4;
 }
 
-.toolbar {
+.topbar {
+  background-color:  black;
+  padding: 0;
+    white-space: nowrap;
+    overflow-x: auto;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    padding-right: 10px;
+    padding-left: 10px;
+    padding-top: 10px;
+}
+
+.bottombar{
   display: flex;
-  gap: 10px;
-  background-color: #f1f1f1;
+  align-items: center;
+  position: fixed;
+  justify-content: space-between; 
+  background-color: black;
   padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  gap: 10px;
+  color: white;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
 }
 
-.shape-menu {
-  display: flex;
-  gap: 10px;
-  padding: 10px;
-  background-color: #f9f9f9;
+
+.Canvas {
+  flex: 1; /* Fill available space */
+  border: 1px solid #ccc;
+  overflow: hidden; /* Prevent overflow inside the Canvas */
 }
 
-canvas {
-  flex-grow: 1;
+
+.topbar button:hover,
+.bottombar button:hover {
+  background-color: var(--buttons-color);
+  cursor: pointer;
 }
+
+.topbar button,
+.bottombar button {
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.topbar button:hover,
+.bottombar button:hover {
+    transform: scale(1.05);
+}
+
+/* src/App.css */
+
+/* Default Theme (Light) */
+:root {
+  --background: #f4f4f4;
+  --text-color: bold;
+  --accent-color: #3b4b68;
+  --toolbar-bg: #3b4b68;
+  --canvas-bg: #fff;
+  --bottombar-bg: #3b4b68;
+  --buttons-color:#3b4b68;
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+  --background: #333;
+  --text-color: #f4f4f4;
+  --accent-color: #212121;
+  --toolbar-bg: #212121;
+  --canvas-bg: #444;
+  --bottombar-bg: #212121;
+  --buttons-color:#282828;
+}
+
+
+.topbar {
+  background-color: var(--toolbar-bg);
+}
+
+.bottombar {
+  background-color: var(--bottombar-bg);
+}
+
+.konvajs-content {
+  background-color: var(--canvas-bg);
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+  position: fixed;
+  bottom: 50px;
+  right: 0px;
+  background-color: var(--accent-color);
+  color: var(--text-color);
+  border: none;
+  border-radius: 4px;
+  padding: 10px 15px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.theme-toggle:hover {
+  background-color: var(--text-color);
+  color: var(--accent-color);
+}
+
