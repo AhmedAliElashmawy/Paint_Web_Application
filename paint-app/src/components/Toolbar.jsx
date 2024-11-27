@@ -63,7 +63,7 @@ const Toolbar = ({
       <div style={styles.grid}>
         {shapes.map((shape) => (
           <button
-            onClick={() => onShapeSelect(shape.id)}
+            onClick={() => onShapeSelect(shape.label)}
             key={shape.id}
             style={styles.button}
             title={shape.label}
