@@ -1,135 +1,190 @@
 import React, { useRef, useState } from "react";
-import { Stage, Layer, Circle, Rect, Line, Transformer } from "react-konva";
+import { Stage, Layer, Rect, Circle, Transformer } from "react-konva";
 
 const Canvas = ({ shapes, setShapes, selectedShape, selectedColor, selectedSize }) => {
-  const [selectedId, setSelectedId] = useState(null); // Tracks the currently selected shape
-  const stageRef = useRef(null); // Reference to the canvas stage
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [newShape, setNewShape] = useState(null);
+  const stageRef = useRef(null);
+  const transformerRef = useRef(null);
+  const [selectedId, setSelectedId] = useState(null);
 
-  // Add a new shape to the canvas
-  const handleCanvasClick = (e) => {
-    const stage = e.target.getStage();
+  const handleMouseDown = (e) => {
+    const stage = stageRef.current;
     const pointerPosition = stage.getPointerPosition();
+    
+    // Ensure transformerRef is initialized before calling getLayer
+    if (transformerRef.current) {
+      transformerRef.current.getLayer().batchDraw();
+    }
 
     if (selectedShape) {
-      const newShape = {
-        id: Date.now(), // Unique ID for the shape
+      // Start drawing a new shape
+      const initialShape = {
+        id: Date.now().toString(),
         type: selectedShape,
         x: pointerPosition.x,
         y: pointerPosition.y,
-        size: selectedSize || 50, // Default size
-        color: selectedColor || "blue", // Default color
+        width: 0,
+        height: 0,
+        color: selectedColor || "blue",
+        strokeWidth: selectedSize || 2,
       };
-
-      setShapes([...shapes, newShape]);
+      setNewShape(initialShape);
+      setIsDrawing(true);
+    } else if (e.target.attrs.id) {
+      // Select an existing shape
+      handleSelect(e.target.attrs.id);
+    } else {
+      // Clicked outside any shape - deselect
+      handleDeselect();
     }
   };
 
-  // Update the position of a shape after dragging
-  const handleDragEnd = (id, e) => {
-    const updatedShapes = shapes.map((shape) =>
-      shape.id === id
-        ? { ...shape, x: e.target.x(), y: e.target.y() }
-        : shape
-    );
-    setShapes(updatedShapes);
+  const handleMouseMove = (e) => {
+    if (!isDrawing || !newShape) return;
+
+    const stage = stageRef.current;
+    const pointerPosition = stage.getPointerPosition();
+
+    const updatedShape = {
+      ...newShape,
+      width: pointerPosition.x - newShape.x,
+      height: pointerPosition.y - newShape.y,
+    };
+
+    setNewShape(updatedShape);
   };
 
-  // Highlight the selected shape and make it resizable
-  const handleShapeSelect = (id) => {
+  const handleMouseUp = () => {
+    if (isDrawing && newShape) {
+      setShapes([...shapes, newShape]);
+    }
+    setIsDrawing(false);
+    setNewShape(null);
+  };
+
+  const handleSelect = (id) => {
     setSelectedId(id);
+    const selectedNode = stageRef.current.findOne(`#${id}`);
+
+    if (selectedNode && transformerRef.current) {
+      transformerRef.current.nodes([selectedNode]);
+      transformerRef.current.getLayer().batchDraw();
+    }
+  };
+
+  const handleDeselect = () => {
+    setSelectedId(null);
+    if (transformerRef.current) {
+      transformerRef.current.nodes([]);
+      transformerRef.current.getLayer().batchDraw();
+    }
   };
 
   const handleTransformerChange = (id, node) => {
     const updatedShapes = shapes.map((shape) =>
       shape.id === id
-        ? { ...shape, x: node.x(), y: node.y(), size: node.width() }
+        ? {
+            ...shape,
+            x: node.x(),
+            y: node.y(),
+            width: node.width(),
+            height: node.height(),
+            radius: shape.type === "circle" ? node.width() / 2 : shape.radius,
+          }
         : shape
     );
     setShapes(updatedShapes);
   };
 
   return (
-    <div>
-      <Stage
-        ref={stageRef}
-        width={1919}
-        height={800}
-        onClick={(e) => {
-          if (e.target === e.target.getStage()) setSelectedId(null); // Deselect if clicked outside
-        }}
-        onMouseDown={handleCanvasClick}
-        style={{ border: "1px solid black" }}
-      >
-        <Layer>
-          {shapes.map((shape) => {
-            if (shape.type === "circle") {
-              return (
-                <Circle
-                  key={shape.id}
-                  id={shape.id.toString()}
-                  x={shape.x}
-                  y={shape.y}
-                  radius={shape.size}
-                  fill={shape.color}
-                  draggable
-                  onDragEnd={(e) => handleDragEnd(shape.id, e)}
-                  onClick={() => handleShapeSelect(shape.id)}
-                />
-              );
+    <Stage
+      ref={stageRef}
+      width={1919}
+      height={800}
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onClick={(e) => {
+        if (e.target === e.target.getStage()) setSelectedId(null); // Deselect if clicked outside
+      }}
+      style={{ border: "1px solid black" }}
+    >
+      <Layer>
+        {shapes.map((shape) => {
+          if (shape.type === "rectangle") {
+            return (
+              <Rect
+                key={shape.id}
+                id={shape.id}
+                x={shape.x}
+                y={shape.y}
+                width={shape.width}
+                height={shape.height}
+                stroke={shape.color}
+                strokeWidth={shape.strokeWidth}
+                fill="transparent"
+                draggable
+                onClick={() => handleSelect(shape.id)}
+              />
+            );
+          }
+          if (shape.type === "circle") {
+            return (
+              <Circle
+                key={shape.id}
+                id={shape.id}
+                x={shape.x}
+                y={shape.y}
+                radius={Math.abs(shape.width) / 2}
+                stroke={shape.color}
+                strokeWidth={shape.strokeWidth}
+                fill="transparent"
+                draggable
+                onClick={() => handleSelect(shape.id)}
+              />
+            );
+          }
+          return null;
+        })}
+
+        {newShape && newShape.type === "rectangle" && (
+          <Rect
+            x={newShape.x}
+            y={newShape.y}
+            width={newShape.width}
+            height={newShape.height}
+            stroke={newShape.color}
+            strokeWidth={newShape.strokeWidth}
+            fill="transparent"
+          />
+        )}
+
+        {newShape && newShape.type === "circle" && (
+          <Circle
+            x={newShape.x}
+            y={newShape.y}
+            radius={Math.abs(newShape.width) / 2}
+            stroke={newShape.color}
+            strokeWidth={newShape.strokeWidth}
+            fill="transparent"
+          />
+        )}
+
+        {selectedId && (
+          <Transformer
+            nodes={[stageRef.current.findOne(`#${selectedId}`)]}
+            ref={transformerRef}
+            onTransformEnd={(e) =>
+              handleTransformerChange(
+                selectedId,
+                stageRef.current.findOne(`#${selectedId}`)
+              )
             }
-            if (shape.type === "rectangle") {
-              return (
-                <Rect
-                  key={shape.id}
-                  id={shape.id.toString()}
-                  x={shape.x}
-                  y={shape.y}
-                  width={shape.size}
-                  height={shape.size}
-                  fill={shape.color}
-                  draggable
-                  onDragEnd={(e) => handleDragEnd(shape.id, e)}
-                  onClick={() => handleShapeSelect(shape.id)}
-                />
-              );
-            }
-            if (shape.type === "line") {
-              return (
-                <Line
-                  key={shape.id}
-                  id={shape.id.toString()}
-                  points={[
-                    shape.x,
-                    shape.y,
-                    shape.x + shape.size,
-                    shape.y + shape.size,
-                  ]}
-                  stroke={shape.color}
-                  strokeWidth={2}
-                  draggable
-                  onDragEnd={(e) => handleDragEnd(shape.id, e)}
-                  onClick={() => handleShapeSelect(shape.id)}
-                />
-              );
-            }
-            return null;
-          })}
-          {selectedId && (
-            <Transformer
-              nodes={[
-                stageRef.current.findOne(`#${selectedId}`),
-              ]}
-              onTransformEnd={(e) =>
-                handleTransformerChange(
-                  selectedId,
-                  stageRef.current.findOne(`#${selectedId}`)
-                )
-              }
-            />
-          )}
-        </Layer>
-      </Stage>
-    </div>
+          />
+        )}
+      </Layer>
+    </Stage>
   );
 };
 
