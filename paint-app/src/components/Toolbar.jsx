@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { v4 as uuidv4 } from 'uuid';
 import "./Toolbar.css";
 
 const Toolbar = ({
@@ -63,7 +64,7 @@ const Toolbar = ({
       <div style={styles.grid}>
         {shapes.map((shape) => (
           <button
-            onClick={() => onShapeSelect(shape.id)}
+            onClick={() => onShapeSelect(shape.label)}
             key={shape.id}
             style={styles.button}
             title={shape.label}
@@ -129,9 +130,12 @@ const Toolbar = ({
   };
 
   const shapes = [
-    { id: "square", label: "Square" },
-    { id: "rectangle", label: "Rectangle", icon: "/icons/rectangle.svg" },
-    { id: "circle", label: "Circle" },
+    { id: uuidv4(), label: "Square" },
+    { id: uuidv4(), label: "Rectangle", icon: "/icons/rectangle.svg" },
+    { id: uuidv4(), label: "Circle" },
+    { id: uuidv4(), label: "Ellipse" },
+    { id: uuidv4(), label: "LineSegment" },
+    { id: uuidv4(), label: "Triangle" },
   ];
 
   const row1Colors = ["black", "red", "green", "blue", "yellow"];

@@ -2,7 +2,13 @@ package com.example.PaintApplication;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import jakarta.persistence.*;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import lombok.Data;
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,  // Include type info in JSON as a property
@@ -14,7 +20,8 @@ import lombok.Data;
         @JsonSubTypes.Type(value = Rectangle.class, name = "Rectangle"),
         @JsonSubTypes.Type(value = Square.class, name = "Square"),
         @JsonSubTypes.Type(value = Ellipse.class, name = "Ellipse"),
-        @JsonSubTypes.Type(value = LineSegment.class, name = "LineSegment")
+        @JsonSubTypes.Type(value = LineSegment.class, name = "LineSegment"),
+        @JsonSubTypes.Type(value = Triangle.class, name = "Triangle")
 })
 
 @Data

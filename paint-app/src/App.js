@@ -11,6 +11,8 @@ function App() {
   const [selectedShape, setSelectedShape] = useState(null);
   const [selectedColor, setSelectedColor] = useState("#000000");
   const [selectedSize, setSelectedSize] = useState(1);
+  const [selectedX, setSelectedX] = useState(0);
+  const [selectedY, setSelectedY] = useState(0);
 
   return (
     <div className="app-container">
@@ -21,6 +23,10 @@ function App() {
         onColorSelect={setSelectedColor}
         selectedSize={selectedSize}
         onSizeChange={setSelectedSize}
+        // selectedX={selectedX}
+        // onXselect={setSelectedX}
+        // selectedY={selectedY}
+        // onYselect={setSelectedY}
       />
       <Canvas
         shapes={shapes}
