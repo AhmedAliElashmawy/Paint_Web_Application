@@ -38,7 +38,7 @@ const Canvas = ({ shapes, setShapes, selectedShape, selectedColor, selectedSize 
 
     if (selectedShape) {
       const shapeData = await handleShapeSelect(selectedShape);
-      if (selectedShape === "Triangle") {
+      if (shapeData.type === "Triangle") {
         const pos = e.target.getStage().getPointerPosition();
         setNewShape({
           id: String(shapeData.id), // Ensure ID is a string
@@ -92,9 +92,9 @@ const Canvas = ({ shapes, setShapes, selectedShape, selectedColor, selectedSize 
       const pos = e.target.getStage().getPointerPosition();
       const { x1, y1 } = newShape;
       const x2 = pos.x;
-      const y2 = pos.y;
-      const x3 = x1 + (x2 - x1) / 2;
-      const y3 = y1 - Math.abs(y2 - y1);
+      const y2 = y1;
+      const x3 = Math.abs(x2 + x1) / 2;
+      const y3 = pos.y;
 
       setNewShape((prev) => ({
         ...prev,
