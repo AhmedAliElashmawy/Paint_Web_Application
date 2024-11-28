@@ -1,15 +1,16 @@
 package com.example.PaintApplication;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Service
 public class ShapeService {
@@ -30,6 +31,7 @@ public class ShapeService {
         return shapeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Shape not found"));
     }
+    @Transactional
     public Shape saveShape(Shape shape) {
         saveToUndoStack();
         return shapeRepository.save(shape);

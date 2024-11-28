@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Version;
 import lombok.Data;
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,  // Include type info in JSON as a property
@@ -31,6 +32,8 @@ public abstract class Shape implements Cloneable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Version
+    private int version;
     int x;
     int y;
     String color;

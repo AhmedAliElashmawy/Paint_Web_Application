@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
+import axios from "axios";
 import "./Toolbar.css";
 
 const Toolbar = ({
@@ -9,6 +10,14 @@ const Toolbar = ({
   onColorSelect,
   selectedSize,
   onSizeChange,
+  selectedFill,
+  setFillSelect,
+  selectedPencil,
+  setselectedPencil,
+  setselectedBrush,
+  setselectedEraser,
+  setselectedAirbrush,
+  setselectedFloodFill,
 }) => {
   const [selectedWidth, setSelectedWidth] = useState(selectedSize || 1);
   const [currentColor, setCurrentColor] = useState(selectedColor || "#000000");
@@ -43,7 +52,7 @@ const Toolbar = ({
         button === "divider" ? (
           <div key={index} className="divider">|</div>
         ) : (
-          <button key={index} title={button.label || button}>
+          <button key={index} title={button.label || button} onClick={() => ButtonFunctions(button.label)}>
             {button.icon ? (
               <img
                 src={button.icon}
@@ -59,12 +68,93 @@ const Toolbar = ({
     </div>
   );
 
+  const ButtonFunctions = async (button) => {
+    onShapeSelect(null);
+    setselectedPencil(false);
+    setselectedBrush(false);
+    setselectedEraser(false);
+    setFillSelect(false);
+    setselectedEraser(false)
+    setselectedAirbrush(false);
+    setselectedFloodFill(false);
+    switch (button) {
+      case "Flood":
+      setselectedFloodFill(true);
+      break;
+
+      case "Airbrush":
+      setselectedAirbrush(true);
+      break;
+
+      case "Eraser":
+      setselectedEraser(true);
+      break;
+
+      case "Pencil":
+      setselectedPencil(true);
+      break;
+
+      case "Brush":
+      setselectedBrush(true);
+      break;
+
+      case "Outline only":
+        setFillSelect(false);
+        break;
+
+      case "Fill":
+        setFillSelect(true); // Assuming `setFillSelect` is a state updater
+        break;
+  
+        case "Save":
+    try {
+        const response = await axios.post('http://localhost:8080/api/shapes/save', null, {
+            params: {
+                format: "json", // Specify format
+                filePath: "C:/Temp/sketch.json"
+                }
+        });
+        console.log('Shapes saved successfully:', response.data);
+    } catch (error) {
+        console.error('Did not save');
+        if (error.response) {
+            console.error('Server responded with error:', error.response.data);
+        } else {
+            console.error('Error:', error.message);
+        }
+    }
+    break;
+
+    case "Load":
+      const response = await axios.post('http://localhost:8080/api/shapes/load', null, {
+        params: {
+            format: "json", // or "xml"
+            filePath: "C:/Temp/sketch.json"
+        }
+    });
+    console.log(response.data);
+    break;
+
+        
+        default:
+        console.warn(`Unknown button action: ${button}`);
+    }
+  };
+  
+
   const ShapeSelector = ({ shapes }) => (
     <div style={styles.container}>
       <div style={styles.grid}>
         {shapes.map((shape) => (
           <button
-            onClick={() => onShapeSelect(shape.label)}
+            onClick={() => {
+              onShapeSelect(shape.label)
+              setselectedPencil(false);
+              setselectedBrush(false);
+              setselectedEraser(false);
+              setselectedAirbrush(false);
+              setselectedFloodFill(false);
+            }}
             key={shape.id}
             style={styles.button}
             title={shape.label}
@@ -118,13 +208,13 @@ const Toolbar = ({
       { label: "Airbrush", icon: "/icons/airbrush.png" },
     ],
     menu4: [
-      { label: "Flood fill" },
+      { label: "Flood" },
       { label: "Brush", icon: "/icons/brush.svg" },
       { label: "Text", icon: "/icons/text.svg" },
     ],
     menu5: [
       { label: "Outline only" },
-      { label: "Fill only" },
+      { label: "Fill" },
       { label: "Outline and fill" },
     ],
   };

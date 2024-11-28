@@ -76,32 +76,42 @@ public class ShapeController {
     }
 
     @PostMapping("/save")
-    public String saveShapes() {
+    public String saveShapes(@RequestParam String format, @RequestParam String filePath) {
         try {
-            sketchManager.saveSketchAsJSON();
-            sketchManager.saveSketchAsXML();
-            return "Shapes saved successfully in both JSON and XML formats.";
+            if ("json".equalsIgnoreCase(format)) {
+                sketchManager.saveSketchAsJSON(filePath);
+                return "Shapes saved successfully in JSON format.";
+            } else if ("xml".equalsIgnoreCase(format)) {
+                sketchManager.saveSketchAsXML(filePath);
+                return "Shapes saved successfully in XML format.";
+            } else {
+                return "Invalid format. Please specify 'json' or 'xml'.";
+            }
         } catch (IOException e) {
             return "Error saving shapes: " + e.getMessage();
         }
     }
 
     @PostMapping("/load")
-    public String loadShapes(@RequestParam String format) {
-        try {
-            if ("json".equalsIgnoreCase(format)) {
-                sketchManager.loadSketchFromJSON();
-                return "Shapes loaded successfully from JSON.";
-            } else if ("xml".equalsIgnoreCase(format)) {
-                sketchManager.loadSketchFromXML();
-                return "Shapes loaded successfully from XML.";
-            } else {
-                return "Invalid format. Please specify 'json' or 'xml'.";
-            }
-        } catch (IOException e) {
-            return "Error loading shapes: " + e.getMessage();
+public String loadShapes(@RequestParam String format, @RequestParam String filePath) {
+    try {
+        System.out.println("Loading shapes from: " + filePath); // Debugging
+        if ("json".equalsIgnoreCase(format)) {
+            sketchManager.loadSketchFromJSON(filePath);
+            return "Shapes loaded successfully from JSON.";
+        } else if ("xml".equalsIgnoreCase(format)) {
+            sketchManager.loadSketchFromXML(filePath);
+            return "Shapes loaded successfully from XML.";
+        } else {
+            return "Invalid format. Please specify 'json' or 'xml'.";
         }
+    } catch (IOException e) {
+        System.err.println("Error loading shapes: " + e.getMessage()); // Debugging
+        return "Error loading shapes: " + e.getMessage();
     }
+}
+
+
     @PostMapping("/freehand")
     public Shape drawFreehand(@RequestBody Freehand request) {
         return shapeService.drawFreehand(

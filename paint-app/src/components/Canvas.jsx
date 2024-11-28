@@ -1,10 +1,28 @@
 import React, { useRef, useState } from "react";
 import axios from "axios";
 import { Stage, Layer, Rect, Circle, Ellipse, Line, RegularPolygon, Transformer } from "react-konva";
+import Konva from "konva";
 
-const Canvas = ({ shapes, setShapes, selectedShape, selectedColor, selectedSize }) => {
+const Canvas = ({ 
+  shapes,
+  setShapes,
+  selectedShape,
+  selectedColor,
+  selectedSize,
+  selectedFill,
+  selectedPencil,
+  selectedBrush,
+  selectedEraser,
+  selectedAirbrush,
+  selectedFloodFill
+       }) => {
   const [isDrawing, setIsDrawing] = useState(false);
   const [newShape, setNewShape] = useState(null);
+  const [lines, setLines] = useState([]);
+  const [currentLine, setCurrentLine] = useState([]);
+  const [Blines, setBLines] = useState([]);
+  const [BcurrentLine, setBCurrentLine] = useState([]);
+  const [airbrushCircles, setAirbrushCircles] = useState([]);
   const stageRef = useRef(null);
   const transformerRef = useRef(null);
   const [selectedId, setSelectedId] = useState(null);
@@ -35,9 +53,36 @@ const Canvas = ({ shapes, setShapes, selectedShape, selectedColor, selectedSize 
     if (transformerRef.current) {
       transformerRef.current.getLayer().batchDraw();
     }
+    else if(selectedPencil){
+      setIsDrawing(true);
+      const position = e.target.getStage().getPointerPosition();
+      setCurrentLine([position.x, position.y]);
+    }
+    else if(selectedBrush){
+      setIsDrawing(true);
+      const position = e.target.getStage().getPointerPosition();
+      setBCurrentLine([position.x, position.y]);
+    }
+    else if(selectedAirbrush){
+      setIsDrawing(true);
+    }
+    else if(selectedEraser){
+      const clickedShape = e.target.attrs.id;
+    if (clickedShape) {
+      deleteShape(clickedShape);
+      deleteBrush(clickedShape);
+      deleteLine(clickedShape);
+      deleteAirbrush(clickedShape);
+    }
+    if (clickedShape) {
+    }
+    if (clickedShape) {
+    }
+    }
 
-    if (selectedShape) {
+    else if (selectedShape) {
       const shapeData = await handleShapeSelect(selectedShape);
+      const fill = selectedFill ? shapeData.color : "transparent";
       if (shapeData.type === "Triangle") {
         const pos = e.target.getStage().getPointerPosition();
         setNewShape({
@@ -50,6 +95,7 @@ const Canvas = ({ shapes, setShapes, selectedShape, selectedColor, selectedSize 
           x3: pos.x,
           y3: pos.y,
           color: shapeData.color,
+          fill,
           strokeWidth: selectedSize,
         });
       }else if(shapeData.type === "LineSegment"){
@@ -62,6 +108,7 @@ const Canvas = ({ shapes, setShapes, selectedShape, selectedColor, selectedSize 
           x2: pos.x,
           y2: pos.y,
           color: shapeData.color, // Set your default color
+          fill,
           strokeWidth: selectedSize, // Set your stroke width
         });
       }else{
@@ -73,6 +120,7 @@ const Canvas = ({ shapes, setShapes, selectedShape, selectedColor, selectedSize 
         width: 0,
         height: 0,
         color: shapeData.color,
+        fill,
         strokeWidth: selectedSize || 2,
       };
       setNewShape(initialShape);
@@ -86,9 +134,63 @@ const Canvas = ({ shapes, setShapes, selectedShape, selectedColor, selectedSize 
     }
   };
 
+  const handleMouseClick = (e) => {
+    if (!e || !e.target) {
+      console.error("Event or target is undefined:", e);
+      return;
+    }
+  
+    if (!selectedFloodFill) return;
+  
+    const targetShape = e.target;
+  
+    // Check if clicked on a shape
+    if (targetShape.attrs?.id) {
+      const clickedId = targetShape.attrs.id;
+  
+      setShapes((prevShapes) => {
+        const updatedShapes = prevShapes.map((shape) =>
+          shape.id === clickedId ? { ...shape, fill: selectedColor } : shape
+        );
+        return updatedShapes;
+      });
+    } else {
+      console.warn("Flood fill clicked on non-shape target");
+    }
+  };
+  
+
   const handleMouseMove = (e) => {
-    if (!isDrawing || !newShape) return;
-    if (newShape.type === "Triangle") {
+    if (!isDrawing) return;
+    if(selectedPencil){
+      const stage = e.target.getStage();
+      const position = stage.getPointerPosition();
+      setCurrentLine((prev) => [...prev, position.x, position.y]);
+      }
+    else if( selectedBrush){
+      const stage = e.target.getStage();
+      const position = stage.getPointerPosition();
+      setBCurrentLine((Bprev) => [...Bprev, position.x, position.y]);
+      }
+    else if( selectedAirbrush){
+      const stage = e.target.getStage();
+      const pointerPosition = stage.getPointerPosition();
+    
+      // Create small circles (airbrush effect)
+      const newCircle = {
+        id: `airbrush-${Date.now()}-${Math.random()}`,
+        x: pointerPosition.x + Math.random() * 10 - 5, // Random variation for a "spray" effect
+        y: pointerPosition.y + Math.random() * 10 - 5, // Random variation
+        radius: Math.random() * 5 + 2, // Random radius to vary size
+        opacity: Math.random() * 0.3 + 0.1, // Semi-transparent
+        color: selectedColor, // Color from the airbrush tool
+        strokeWidth: selectedSize, // Brush size
+      };
+    
+      // Add this new circle to the airbrushCircles state
+      setAirbrushCircles((prev) => [...prev, newCircle]);
+      }
+    else if (newShape.type === "Triangle") {
       const pos = e.target.getStage().getPointerPosition();
       const { x1, y1 } = newShape;
       const x2 = pos.x;
@@ -124,9 +226,38 @@ const Canvas = ({ shapes, setShapes, selectedShape, selectedColor, selectedSize 
     setNewShape(updatedShape);
   }
   };
-
+  // const getCanvasBackgroundColor = () => {
+  //   const rootStyles = getComputedStyle(document.documentElement);
+  //   return rootStyles.getPropertyValue('--canvas-bg').trim();
+  // };
   const handleMouseUp = () => {
-    if (isDrawing && newShape) {
+    if (isDrawing && selectedPencil ) {
+      const newLineStroke = {
+        id: `line-${Date.now()}`,
+        points: currentLine,
+        color: "black",
+        strokeWidth: 2,
+      };
+  
+      setLines((prev) => [...prev, newLineStroke]);
+      setCurrentLine([]);
+    }
+    else if (isDrawing && selectedAirbrush) {
+      setIsDrawing(false);
+    }
+    else if (isDrawing && selectedBrush) {
+      const newBrushStroke = {
+        id: `brush-${Date.now()}`, // Generate a unique ID
+        points: BcurrentLine,
+        color: selectedColor, // Use the selected color for this stroke
+        strokeWidth: selectedSize, // Use the selected stroke size
+      };
+  
+      setBLines((prev) => [...prev, newBrushStroke]);
+      setBCurrentLine([]);
+    }
+  
+    else if (isDrawing && newShape) {
       setShapes([...shapes, newShape]);
     }
     setIsDrawing(false);
@@ -134,12 +265,19 @@ const Canvas = ({ shapes, setShapes, selectedShape, selectedColor, selectedSize 
   };
 
   const handleSelect = (id) => {
+    if(selectedFloodFill){
+      handleMouseClick(new MouseEvent("click"));
+    }
+    else{
+      console.log("gg");
     setSelectedId(id);
+    selectedShape = null;
     const node = stageRef.current.findOne(`#${id}`);
     if (node && transformerRef.current) {
       transformerRef.current.nodes([node]);
       transformerRef.current.getLayer().batchDraw();
     }
+  }
   };
 
   const handleDeselect = () => {
@@ -166,6 +304,22 @@ const Canvas = ({ shapes, setShapes, selectedShape, selectedColor, selectedSize 
     setShapes(updatedShapes);
   };
 
+  const deleteShape = (id) => {
+    setShapes((prevShapes) => prevShapes.filter((shape) => shape.id !== id));
+  };
+  const deleteBrush = (id) => {
+    setBLines((prevShapes) => prevShapes.filter((shape) => shape.id !== id));
+  };
+  const deleteLine = (id) => {
+    setLines((prevShapes) => prevShapes.filter((shape) => shape.id !== id));
+  };
+  const deleteAirbrush = (id) => {
+    setAirbrushCircles((prev) => prev.filter((circle) => circle.id !== id));
+  };
+  const clearAllAirbrushes = () => {
+    setAirbrushCircles([]);
+  };
+
   return (
     <Stage
       ref={stageRef}
@@ -175,11 +329,52 @@ const Canvas = ({ shapes, setShapes, selectedShape, selectedColor, selectedSize 
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onClick={(e) => {
-        if (e.target === e.target.getStage()) setSelectedId(null); // Deselect if clicked outside
+        // Deselect if clicked outside
+        if (e.target === e.target.getStage()) {
+          setSelectedId(null);
+        } else {
+          handleMouseClick(e); // Handle mouse click normally
+        }
       }}
       style={{ border: "1px solid black" }}
     >
       <Layer>
+      {airbrushCircles.map((circle) => (
+    <Circle
+    key={circle.id} // Use id as the key
+    id={circle.id} // Assign id to each circle
+      x={circle.x}
+      y={circle.y}
+      radius={circle.radius}
+      fill={circle.color}
+      opacity={circle.opacity}
+      strokeWidth={circle.strokeWidth}
+      onClick={() => clearAllAirbrushes()}
+    />
+  ))}
+      {lines.map((line) => (
+        <Line
+          key={line.id}
+          id={line.id}
+          points={line.points}
+          stroke={line.color} // Pencil always uses black
+          strokeWidth={line.strokeWidth} // Pencil stroke width
+          lineCap="round"
+          lineJoin="round"
+        />
+      ))}
+
+      {Blines.map((Bline) => (
+        <Line
+        key={Bline.id}              // Use the unique ID as the key
+        id={Bline.id}
+        points={Bline.points}       // Points for this stroke
+        stroke={Bline.color}        // Color for this stroke
+        strokeWidth={Bline.strokeWidth} // Stroke width for this stroke
+        lineCap="round"
+        lineJoin="round"
+        />
+      ))}
         {shapes.map((shape) => {
           if (shape.type === "Rectangle") {
             return (
@@ -192,7 +387,7 @@ const Canvas = ({ shapes, setShapes, selectedShape, selectedColor, selectedSize 
                 height={shape.height}
                 stroke={shape.color}
                 strokeWidth={shape.strokeWidth}
-                fill="transparent"
+                fill={shape.fill}
                 draggable
                 onClick={() => handleSelect(String(shape.id))} // Pass ID as a string
               />
@@ -208,7 +403,7 @@ const Canvas = ({ shapes, setShapes, selectedShape, selectedColor, selectedSize 
                 radius={Math.abs(shape.width) / 2}
                 stroke={shape.color}
                 strokeWidth={shape.strokeWidth}
-                fill="transparent"
+                fill={shape.fill}
                 draggable
                 onClick={() => handleSelect(String(shape.id))} // Pass ID as a string
               />
@@ -225,7 +420,7 @@ const Canvas = ({ shapes, setShapes, selectedShape, selectedColor, selectedSize 
                 height={Math.abs(shape.width)} // Square: equal width and height
                 stroke={shape.color}
                 strokeWidth={shape.strokeWidth}
-                fill="transparent"
+                fill={shape.fill}
                 draggable
                 onClick={() => handleSelect(String(shape.id))}
               />
@@ -243,7 +438,7 @@ const Canvas = ({ shapes, setShapes, selectedShape, selectedColor, selectedSize 
                 radiusY={Math.abs(shape.height) / 2} // Half height for radiusY
                 stroke={shape.color}
                 strokeWidth={shape.strokeWidth}
-                fill="transparent"
+                fill={shape.fill}
                 draggable
                 onClick={() => handleSelect(String(shape.id))}
               />
@@ -278,7 +473,7 @@ const Canvas = ({ shapes, setShapes, selectedShape, selectedColor, selectedSize 
                 closed
                 stroke={shape.color}
                 strokeWidth={shape.strokeWidth}
-                fill="transparent"
+                fill={shape.fill}
                 draggable
                 onClick={() => handleSelect(String(shape.id))}
               />
@@ -295,7 +490,7 @@ const Canvas = ({ shapes, setShapes, selectedShape, selectedColor, selectedSize 
             height={newShape.height}
             stroke={newShape.color}
             strokeWidth={newShape.strokeWidth}
-            fill="transparent"
+            fill={newShape.fill}
           />
         )}
         {newShape && newShape.type === "Square" && (
@@ -306,7 +501,7 @@ const Canvas = ({ shapes, setShapes, selectedShape, selectedColor, selectedSize 
             height={newShape.width}
             stroke={newShape.color}
             strokeWidth={newShape.strokeWidth}
-            fill="transparent"
+            fill={newShape.fill}
           />
         )}
 
@@ -317,7 +512,7 @@ const Canvas = ({ shapes, setShapes, selectedShape, selectedColor, selectedSize 
             radius={Math.abs(newShape.width) / 2}
             stroke={newShape.color}
             strokeWidth={newShape.strokeWidth}
-            fill="transparent"
+            fill={newShape.fill}
           />
         )}
 
@@ -329,11 +524,11 @@ const Canvas = ({ shapes, setShapes, selectedShape, selectedColor, selectedSize 
           radiusY={Math.abs(newShape.height) / 2}
           stroke={newShape.color}
           strokeWidth={newShape.strokeWidth}
-          fill="transparent"
-        />
+          fill={newShape.fill}
+          />
       )}
 
-{newShape && newShape.type === "LineSegment" && (
+        {newShape && newShape.type === "LineSegment" && (
           <Line
             points={[newShape.x1, newShape.y1, newShape.x2, newShape.y2]}
             stroke={newShape.color}
@@ -341,15 +536,35 @@ const Canvas = ({ shapes, setShapes, selectedShape, selectedColor, selectedSize 
           />
         )}
 
-{newShape && newShape.type === "Triangle" && (
+        {newShape && newShape.type === "Triangle" && (
           <Line
             points={[newShape.x1, newShape.y1, newShape.x2, newShape.y2, newShape.x3, newShape.y3]}
             closed
             stroke={newShape.color}
             strokeWidth={newShape.strokeWidth}
-            fill="transparent"
+            fill={newShape.fill}
           />
         )}
+  
+{isDrawing && selectedPencil && currentLine.length > 0 && (
+  <Line
+    points={currentLine}
+    stroke="black"
+    strokeWidth={2}
+    lineCap="round"
+    lineJoin="round"
+  />
+)}
+
+{isDrawing && selectedBrush && BcurrentLine.length > 0 && (
+  <Line
+  points={BcurrentLine}
+  stroke={selectedColor}      // Use selected color
+  strokeWidth={selectedSize}  // Use selected size
+  lineCap="round"
+  lineJoin="round"
+  />
+)}
 
         {selectedId &&
           (() => {
