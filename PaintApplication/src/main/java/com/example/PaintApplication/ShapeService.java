@@ -114,5 +114,15 @@ public class ShapeService {
         shapeRepository.deleteAll(); // Clear the current repository
         shapeRepository.saveAll(shapes); // Save the loaded shapes
     }
+    public Shape drawFreehand(List<Point> points, String toolType, String color, double thickness) {
+        saveToUndoStack();
+        Freehand freehandShape = new Freehand();
+        freehandShape.setPoints(points);
+        freehandShape.setToolType(toolType);
+        freehandShape.setColor(color);
+        freehandShape.setThickness(thickness);
+
+        return shapeRepository.save(freehandShape);
+    }
     
 }

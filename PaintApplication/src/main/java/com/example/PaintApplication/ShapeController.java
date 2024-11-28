@@ -102,4 +102,13 @@ public class ShapeController {
             return "Error loading shapes: " + e.getMessage();
         }
     }
+    @PostMapping("/freehand")
+    public Shape drawFreehand(@RequestBody Freehand request) {
+        return shapeService.drawFreehand(
+                request.getPoints(),
+                request.getToolType(),
+                request.getColor(),
+                request.getThickness()
+        );
+    }
 }
