@@ -9,7 +9,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
-import jakarta.persistence.Version;
 import lombok.Data;
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,  // Include type info in JSON as a property
@@ -22,7 +21,9 @@ import lombok.Data;
         @JsonSubTypes.Type(value = Square.class, name = "Square"),
         @JsonSubTypes.Type(value = Ellipse.class, name = "Ellipse"),
         @JsonSubTypes.Type(value = LineSegment.class, name = "LineSegment"),
-        @JsonSubTypes.Type(value = Triangle.class, name = "Triangle")
+        @JsonSubTypes.Type(value = IsoscelesTriangle.class, name = "IsoscelesTriangle"),
+        @JsonSubTypes.Type(value = EquilateralTriangle.class, name = "EquilateralTriangle"),
+        @JsonSubTypes.Type(value = RightTriangle.class, name = "RightTriangle"),
 })
 
 @Data
@@ -32,12 +33,45 @@ public abstract class Shape implements Cloneable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Version
-    private int version;
     int x;
     int y;
     String color;
-    boolean isVisible;
+    String type;
+    long width;
+     long height;
+     int strokeWidth;
+     String fill;
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
     public abstract String getType();
     @Override
     public Shape clone() {

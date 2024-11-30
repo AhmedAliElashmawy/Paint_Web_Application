@@ -6,26 +6,23 @@ import lombok.Data;
 @Data
 @Entity
 public class Square extends Polygon {
-    private double width;
-    private double height;
+    private long width;
+    private long height;
     public Square(){
         super();
     }
-    public Square(int x, int y, String color, boolean isVisible, double width) {
-        super(x, y, color, isVisible, 4); // Rectangle has 4 sides
+    public Square(int x, int y, String color,String type, long width, long height,int strokeWidth,String fill) {
+        super(x, y, color,type, width,height,strokeWidth,fill);
         this.width = width;
-        this.height =width;
+        this.height = width;
     }
     @Override
     public String getType() {
         return "Square";
     }
 
-    @Override
-    public double getPerimeter() {
-        return 2 * (width + width);
-    }
+
     public Square clone() {
-        return new Square(x, y, color, isVisible, width);
+        return new Square(x, y, color,type, width,height,strokeWidth,fill);
     }
 }

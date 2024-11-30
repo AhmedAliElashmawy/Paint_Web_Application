@@ -1,7 +1,6 @@
 import React, { useRef, useState } from "react";
 import axios from "axios";
 import { Stage, Layer, Rect, Circle, Ellipse, Line, RegularPolygon, Transformer } from "react-konva";
-import Konva from "konva";
 
 const Canvas = ({ 
   shapes,
@@ -14,7 +13,15 @@ const Canvas = ({
   selectedBrush,
   selectedEraser,
   selectedAirbrush,
-  selectedFloodFill
+  selectedFloodFill,
+  selectedUndo,
+  setselectedUndo,
+  setUndoID,
+  UndoID,
+  UndoShape,
+  selectedRedo,
+  setselectedRedo,
+  RedoShape,
        }) => {
   const [isDrawing, setIsDrawing] = useState(false);
   const [newShape, setNewShape] = useState(null);
@@ -27,21 +34,16 @@ const Canvas = ({
   const transformerRef = useRef(null);
   const [selectedId, setSelectedId] = useState(null);
 
-  const handleShapeSelect = async (selectedShape) => {
+  const handleShapeSelect = async (Shape) => {
     const stage = stageRef.current;
     const pointerPosition = stage.getPointerPosition();
 
     try {
       const apiUrl = `http://localhost:8080/api/shapes`;
-      const payload = {
-        type: selectedShape,
-        color: selectedColor,
-        x: pointerPosition.x,
-        y: pointerPosition.y,
-      };
 
-      const response = await axios.post(apiUrl, payload);
+      const response = await axios.post(apiUrl, Shape);
       console.log("Created Shape:", response.data);
+      console.log(response.data.id);
       return response.data;
     } catch (error) {
       console.error("Error creating shape:", error);
@@ -68,58 +70,51 @@ const Canvas = ({
     }
     else if(selectedEraser){
       const clickedShape = e.target.attrs.id;
+      console.log(clickedShape);
     if (clickedShape) {
       deleteShape(clickedShape);
       deleteBrush(clickedShape);
       deleteLine(clickedShape);
       deleteAirbrush(clickedShape);
-    }
-    if (clickedShape) {
-    }
-    if (clickedShape) {
-    }
+      }
     }
 
     else if (selectedShape) {
-      const shapeData = await handleShapeSelect(selectedShape);
-      const fill = selectedFill ? shapeData.color : "transparent";
-      if (shapeData.type === "Triangle") {
+      // const shapeData = await handleShapeSelect(selectedShape);
+      const fill = selectedFill ? selectedColor : "transparent";
+      if (selectedShape === "IsoscelesTriangle" || selectedShape === "EquilateralTriangle" || selectedShape === "RightTriangle") {
         const pos = e.target.getStage().getPointerPosition();
         setNewShape({
-          id: String(shapeData.id), // Ensure ID is a string
-          type: shapeData.type,
+          // id: String(shapeData.id), // Ensure ID is a string
+          type: selectedShape,
           x1: pos.x,
           y1: pos.y,
-          x2: pos.x,
-          y2: pos.y,
-          x3: pos.x,
-          y3: pos.y,
-          color: shapeData.color,
+          color: selectedColor,
           fill,
           strokeWidth: selectedSize,
         });
-      }else if(shapeData.type === "LineSegment"){
+      // }else if(selectedShape === "LineSegment"){
+      //   const pos = e.target.getStage().getPointerPosition();
+      //   setNewShape({
+      //     // id: String(shapeData.id), // Ensure ID is a string
+      //     type: selectedShape,
+      //     x: pos.x,
+      //     y: pos.y,
+      //     x2: pos.x,
+      //     y2: pos.y,
+      //     color: selectedColor, // Set your default color
+      //     fill,
+      //     strokeWidth: selectedSize, // Set your stroke width
+      //   });
+      }
+      else{
         const pos = e.target.getStage().getPointerPosition();
-        setNewShape({
-          id: String(shapeData.id), // Ensure ID is a string
-          type: shapeData.type,
-          x1: pos.x,
-          y1: pos.y,
-          x2: pos.x,
-          y2: pos.y,
-          color: shapeData.color, // Set your default color
-          fill,
-          strokeWidth: selectedSize, // Set your stroke width
-        });
-      }else{
       const initialShape = {
-        id: String(shapeData.id), // Ensure ID is a string
-        type: shapeData.type,
-        x: shapeData.x,
-        y: shapeData.y,
-        width: 0,
-        height: 0,
-        color: shapeData.color,
+        // id: String(shapeData.id), // Ensure ID is a string
+        type: selectedShape,
+        x:  pos.x,
+        y: pos.y,
+        color: selectedColor,
         fill,
         strokeWidth: selectedSize || 2,
       };
@@ -178,7 +173,7 @@ const Canvas = ({
     
       // Create small circles (airbrush effect)
       const newCircle = {
-        id: `airbrush-${Date.now()}-${Math.random()}`,
+        // id: `airbrush-${Date.now()}-${Math.random()}`,
         x: pointerPosition.x + Math.random() * 10 - 5, // Random variation for a "spray" effect
         y: pointerPosition.y + Math.random() * 10 - 5, // Random variation
         radius: Math.random() * 5 + 2, // Random radius to vary size
@@ -190,13 +185,20 @@ const Canvas = ({
       // Add this new circle to the airbrushCircles state
       setAirbrushCircles((prev) => [...prev, newCircle]);
       }
-    else if (newShape.type === "Triangle") {
+    else if (selectedShape === "EquilateralTriangle") {
       const pos = e.target.getStage().getPointerPosition();
       const { x1, y1 } = newShape;
-      const x2 = pos.x;
-      const y2 = y1;
-      const x3 = Math.abs(x2 + x1) / 2;
-      const y3 = pos.y;
+      const sideLength = pos.x - x1;  // Horizontal distance is the side length
+  
+      // Second vertex (B) is directly horizontally to the right
+      const x2 = x1 + sideLength;
+      const y2 = y1; // Same y-coordinate as the first vertex
+    
+      // Third vertex (C) is vertically above the midpoint of AB
+      const height = (sideLength * Math.sqrt(3)) / 2;  // Height of the equilateral triangle
+      const x3 = (x1 + x2) / 2;  // Midpoint of AB
+      const y3 = y1 - height;  // Height above the base
+    
 
       setNewShape((prev) => ({
         ...prev,
@@ -205,6 +207,49 @@ const Canvas = ({
         x3,
         y3,
       }));
+
+    }
+    else if (selectedShape === "IsoscelesTriangle") {
+      const pos = e.target.getStage().getPointerPosition();
+      const { x1, y1 } = newShape;
+
+      const x2 = pos.x;
+      const y2 = y1; // Same y-coordinate as the first vertex
+    
+      // Third vertex (C) is vertically above the midpoint of AB
+      const x3 = (x1 + x2) / 2;  // Midpoint of AB
+      const y3 = pos.y;  // Height above the base
+    
+
+      setNewShape((prev) => ({
+        ...prev,
+        x2,
+        y2,
+        x3,
+        y3,
+      }));
+
+    }
+    else if (selectedShape === "RightTriangle") {
+      const pos = e.target.getStage().getPointerPosition();
+      const { x1, y1 } = newShape;
+
+      const x2 = pos.x;
+      const y2 = y1; // Same y-coordinate as the first vertex
+    
+      // Third vertex (C) is vertically above the midpoint of AB
+      const x3 = x1;  // Midpoint of AB
+      const y3 = pos.y;  // Height above the base
+    
+
+      setNewShape((prev) => ({
+        ...prev,
+        x2,
+        y2,
+        x3,
+        y3,
+      }));
+
     }
     else if (selectedShape==="LineSegment" && newShape && newShape.type === "LineSegment") {
       const pos = e.target.getStage().getPointerPosition();
@@ -213,7 +258,37 @@ const Canvas = ({
         x2: pos.x,
         y2: pos.y,
       }));
-    }else{
+    }else if(selectedShape === "Circle"){
+      const stage = stageRef.current;
+      const pointerPosition = stage.getPointerPosition();
+  
+      const updatedShape = {
+        ...newShape,
+        radius1: Math.abs(pointerPosition.x - newShape.x)/2,
+      };
+      setNewShape(updatedShape);
+    }else if(selectedShape === "Ellipse"){
+      const stage = stageRef.current;
+      const pointerPosition = stage.getPointerPosition();
+  
+      const updatedShape = {
+        ...newShape,
+        radius1: Math.abs(pointerPosition.x - newShape.x)/2,
+        radius2: Math.abs(pointerPosition.y - newShape.y)/2,
+      };
+      setNewShape(updatedShape);
+    }else if(selectedShape === "Square"){
+      const stage = stageRef.current;
+      const pointerPosition = stage.getPointerPosition();
+  
+      const updatedShape = {
+        ...newShape,
+        width: pointerPosition.x - newShape.x,
+        height: pointerPosition.x - newShape.x,
+      }
+      setNewShape(updatedShape);
+    }
+    else{
     const stage = stageRef.current;
     const pointerPosition = stage.getPointerPosition();
 
@@ -230,8 +305,13 @@ const Canvas = ({
   //   const rootStyles = getComputedStyle(document.documentElement);
   //   return rootStyles.getPropertyValue('--canvas-bg').trim();
   // };
-  const handleMouseUp = () => {
-    if (isDrawing && selectedPencil ) {
+  const handleMouseUp = async () => {
+    if(selectedRedo){
+      console.log("sss")
+      setShapes([...shapes, RedoShape]);
+      setselectedRedo(false);
+    }
+    else if (isDrawing && selectedPencil ) {
       const newLineStroke = {
         id: `line-${Date.now()}`,
         points: currentLine,
@@ -258,7 +338,8 @@ const Canvas = ({
     }
   
     else if (isDrawing && newShape) {
-      setShapes([...shapes, newShape]);
+      const shapeData = await handleShapeSelect(newShape);
+      setShapes([...shapes, shapeData]);
     }
     setIsDrawing(false);
     setNewShape(null);
@@ -304,6 +385,28 @@ const Canvas = ({
     setShapes(updatedShapes);
   };
 
+const undo = () => {
+  if(selectedUndo && UndoID > 0){
+    if(UndoShape === "Rectangle"){
+      deleteShape(String(UndoID));
+    }else{
+      deleteBrush(String(UndoID));
+      deleteLine(String(UndoID));
+      deleteAirbrush(String(UndoID));
+    }
+  }
+  setUndoID(0);
+}
+const redo = () => {
+  // console.log(selectedRedo);
+  if(selectedRedo && UndoID > 0){
+    // console.log("hi");
+    if(RedoShape.id === 2)
+      handleMouseUp();
+    } 
+    setUndoID(0);
+  }
+
   const deleteShape = (id) => {
     setShapes((prevShapes) => prevShapes.filter((shape) => shape.id !== id));
   };
@@ -321,6 +424,8 @@ const Canvas = ({
   };
 
   return (
+    undo(),
+    redo(),
     <Stage
       ref={stageRef}
       width={1919}
@@ -400,7 +505,7 @@ const Canvas = ({
                 id={String(shape.id)} // Ensure id is a string
                 x={shape.x}
                 y={shape.y}
-                radius={Math.abs(shape.width) / 2}
+                radius={shape.radius1}
                 stroke={shape.color}
                 strokeWidth={shape.strokeWidth}
                 fill={shape.fill}
@@ -434,8 +539,8 @@ const Canvas = ({
                 id={String(shape.id)}
                 x={shape.x}
                 y={shape.y}
-                radiusX={Math.abs(shape.width) / 2} // Half width for radiusX
-                radiusY={Math.abs(shape.height) / 2} // Half height for radiusY
+                radiusX={shape.radius1} // Half width for radiusX
+                radiusY={shape.radius2} // Half height for radiusY
                 stroke={shape.color}
                 strokeWidth={shape.strokeWidth}
                 fill={shape.fill}
@@ -449,7 +554,7 @@ const Canvas = ({
               <Line
                 key={String(shape.id)}
                 id={String(shape.id)}
-                points={[shape.x1, shape.y1, shape.x2, shape.y2]}
+                points={[shape.x, shape.y, shape.x2, shape.y2]}
                 stroke={shape.color}
                 strokeWidth={shape.strokeWidth}
                 draggable
@@ -457,7 +562,7 @@ const Canvas = ({
               />
             );
           }
-          if (shape.type === "Triangle") {
+          if (shape.type === "EquilateralTriangle" || shape.type === "IsoscelesTriangle"|| shape.type === "RightTriangle") {
             return (
               <Line
                 key={String(shape.id)}
@@ -509,7 +614,7 @@ const Canvas = ({
           <Circle
             x={newShape.x}
             y={newShape.y}
-            radius={Math.abs(newShape.width) / 2}
+            radius={newShape.radius1}
             stroke={newShape.color}
             strokeWidth={newShape.strokeWidth}
             fill={newShape.fill}
@@ -520,8 +625,8 @@ const Canvas = ({
         <Ellipse
           x={newShape.x}
           y={newShape.y}
-          radiusX={Math.abs(newShape.width) / 2}
-          radiusY={Math.abs(newShape.height) / 2}
+          radiusX={newShape.radius1}
+          radiusY={newShape.radius2}
           stroke={newShape.color}
           strokeWidth={newShape.strokeWidth}
           fill={newShape.fill}
@@ -530,13 +635,13 @@ const Canvas = ({
 
         {newShape && newShape.type === "LineSegment" && (
           <Line
-            points={[newShape.x1, newShape.y1, newShape.x2, newShape.y2]}
+            points={[newShape.x, newShape.y, newShape.x2, newShape.y2]}
             stroke={newShape.color}
             strokeWidth={newShape.strokeWidth}
           />
         )}
 
-        {newShape && newShape.type === "Triangle" && (
+        {newShape && (newShape.type === "EquilateralTriangle" || newShape.type === "IsoscelesTriangle"|| newShape.type === "RightTriangle") && (
           <Line
             points={[newShape.x1, newShape.y1, newShape.x2, newShape.y2, newShape.x3, newShape.y3]}
             closed

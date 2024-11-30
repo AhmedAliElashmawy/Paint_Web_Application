@@ -17,6 +17,12 @@ function App() {
   const [selectedEraser, setSelectedEraser] = useState(false);
   const [selectedAirbrush, setSelectedAirbrush] = useState(false);
   const [selectedFloodFill, setSelectedFloodFill] = useState(false);
+  const [selectedUndo, setSelectedUndo] = useState(false);
+  const [UndoID, setUndoID] = useState(0);
+  const [UndoShape, setUndoShape] = useState("");
+  const [selectedRedo, setSelectedRedo] = useState(false);
+  const [RedoID, setRedoID] = useState(0);
+  const [RedoShape, setRedoShape] = useState(null);
 
   return (
     <div className="app-container">
@@ -39,6 +45,14 @@ function App() {
         setselectedAirbrush={setSelectedAirbrush}
         selectedFloodFill={selectedFloodFill}
         setselectedFloodFill={setSelectedFloodFill}
+        selectedUndo={selectedUndo}
+        setselectedUndo={setSelectedUndo}
+        setUndoID={setUndoID}
+        setUndoShape={setUndoShape}
+        UndoShape={UndoShape}
+        selectedRedo={selectedRedo}
+        setselectedRedo={setSelectedRedo}
+        setRedoShape={setRedoShape}
         />
       <Canvas
         shapes={shapes}
@@ -52,6 +66,14 @@ function App() {
         selectedEraser={selectedEraser}
         selectedAirbrush={selectedAirbrush}
         selectedFloodFill={selectedFloodFill}
+        setselectedUndo={setSelectedUndo}
+        selectedUndo={selectedUndo}
+        setUndoID={setUndoID}
+        UndoID={UndoID}
+        UndoShape={UndoShape}
+        setselectedRedo={setSelectedRedo}
+        selectedRedo={selectedRedo}
+        RedoShape={RedoShape}
         />
       <Bottombar/>
     </div>

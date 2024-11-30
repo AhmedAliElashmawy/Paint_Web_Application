@@ -1,5 +1,7 @@
 package com.example.PaintApplication;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.Data;
@@ -11,13 +13,8 @@ public Circle(){
     super();
 }
 
-    public Circle(int x, int y, String color, boolean isVisible, double radius1) {
-        super(x, y, color, isVisible, radius1, radius1);
-    }
-
-    @Override
-    public double getArea() {
-        return Math.PI * radius1 * radius1;
+    public Circle(int x, int y, String color, double radius1,String type,int strokeWidth,String fill) {
+        super(x, y, color, radius1, radius1, type,strokeWidth,fill);
     }
 
     @Override
@@ -27,6 +24,6 @@ public Circle(){
 
     @Override
     public Circle clone() {
-        return new Circle(x, y, color, isVisible, radius1);
+        return new Circle(x, y, color, radius1, type,strokeWidth,fill);
     }
 }

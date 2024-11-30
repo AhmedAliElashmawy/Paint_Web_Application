@@ -1,15 +1,21 @@
 package com.example.PaintApplication;
 import jakarta.persistence.Entity;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
 public class EquilateralTriangle extends Triangle{
-    public EquilateralTriangle(int x, int y, String color, boolean isVisible, double x1, double y1, double x2, double y2, double x3, double y3) {
-        super(x, y, color, isVisible, x1, y1, x2, y2, y3, x3);
-        if (!isEquilateralTriangle(x1, y1, x2, y2, x3, y3)) {
-            throw new IllegalArgumentException("The points do not form an equilateral triangle.");
-        }
+
+    public EquilateralTriangle() {
+        super();
+    }
+    public EquilateralTriangle(int x, int y, String color, boolean isVisible, double x1, double y1, double x2, double y2, double x3, double y3,String type,long width, long height,int strokeWidth,String fill) {
+        super(x, y, color, x1, y1, x2, y2, y3, x3,type,width,height,strokeWidth,fill);
+        // if (!isEquilateralTriangle(x1, y1, x2, y2, x3, y3)) {
+        //     throw new IllegalArgumentException("The points do not form an equilateral triangle.");
+        // }
     }
 
     private boolean isEquilateralTriangle(double x1, double y1, double x2, double y2, double x3, double y3) {
@@ -21,6 +27,6 @@ public class EquilateralTriangle extends Triangle{
 
     @Override
     public String getType() {
-        return "Equilateral Triangle";
+        return "EquilateralTriangle";
     }
 }

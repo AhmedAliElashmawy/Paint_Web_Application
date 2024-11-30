@@ -6,8 +6,8 @@ import lombok.Data;
 @Data
 @Entity
 public class LineSegment extends Shape {
-    private double length;
-    private double angle;
+    private int x2;
+    private int y2;
     public LineSegment(){
 
     }

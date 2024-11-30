@@ -17,7 +17,7 @@ public class ShapeService {
         @Autowired
         private ShapeRepository shapeRepository;
     private final Deque<List<Shape>> undoStack = new ArrayDeque<>();
-    private final Deque<List<Shape>> redoStack = new ArrayDeque<>();   
+    private final Deque<List<Shape>> redoStack = new ArrayDeque<>();
     public List<Shape> getAllShapes() {
         return shapeRepository.findAll();
     }
@@ -46,7 +46,6 @@ public class ShapeService {
         existingShape.setX(updatedShape.getX());
         existingShape.setY(updatedShape.getY());
         existingShape.setColor(updatedShape.getColor());
-        existingShape.setVisible(updatedShape.isVisible());
         return shapeRepository.save(existingShape);
     }
     public Shape resizeShape(Long id, double factor) {
@@ -64,8 +63,6 @@ public class ShapeService {
         }
         else if (shape instanceof Rectangle) {
             Rectangle rectangle = (Rectangle) shape;
-            rectangle.setWidth(rectangle.getWidth() * factor);
-            rectangle.setHeight(rectangle.getHeight() * factor);
         }
         else if(shape instanceof Square){
             Square square = (Square) shape;
@@ -89,7 +86,7 @@ public class ShapeService {
     }
     public void undo() {
         if (!undoStack.isEmpty()) {
-            redoStack.push((List<Shape>) new ArrayDeque<>(shapeRepository.findAll()));
+            // redoStack.push(new ArrayList<>(shapeRepository.findAll()));
             List<Shape> previousState = undoStack.pop();
             shapeRepository.deleteAll();
             shapeRepository.saveAll(previousState);
@@ -97,7 +94,7 @@ public class ShapeService {
     }
     public void redo() {
         if (!redoStack.isEmpty()) {
-            undoStack.push((List<Shape>) new ArrayDeque<>(shapeRepository.findAll()));
+            undoStack.push(new ArrayList<>(shapeRepository.findAll()));
             List<Shape> nextState = redoStack.pop();
             shapeRepository.deleteAll();
             shapeRepository.saveAll(nextState);

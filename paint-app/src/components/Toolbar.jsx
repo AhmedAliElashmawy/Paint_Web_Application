@@ -4,20 +4,22 @@ import axios from "axios";
 import "./Toolbar.css";
 
 const Toolbar = ({
-  selectedShape,
   onShapeSelect,
   selectedColor,
   onColorSelect,
   selectedSize,
   onSizeChange,
-  selectedFill,
   setFillSelect,
-  selectedPencil,
   setselectedPencil,
   setselectedBrush,
   setselectedEraser,
   setselectedAirbrush,
   setselectedFloodFill,
+  setselectedUndo,
+  setUndoID,
+  setUndoShape,
+  setselectedRedo,
+  setRedoShape,
 }) => {
   const [selectedWidth, setSelectedWidth] = useState(selectedSize || 1);
   const [currentColor, setCurrentColor] = useState(selectedColor || "#000000");
@@ -77,6 +79,8 @@ const Toolbar = ({
     setselectedEraser(false)
     setselectedAirbrush(false);
     setselectedFloodFill(false);
+    setselectedUndo(false);
+    setselectedRedo(false);
     switch (button) {
       case "Flood":
       setselectedFloodFill(true);
@@ -110,8 +114,8 @@ const Toolbar = ({
     try {
         const response = await axios.post('http://localhost:8080/api/shapes/save', null, {
             params: {
-                format: "json", // Specify format
-                filePath: "C:/Temp/sketch.json"
+                format: "xml", // Specify format
+                filePath: "C:/Temp/sketch1.xml"
                 }
         });
         console.log('Shapes saved successfully:', response.data);
@@ -126,21 +130,69 @@ const Toolbar = ({
     break;
 
     case "Load":
+      try{
       const response = await axios.post('http://localhost:8080/api/shapes/load', null, {
         params: {
-            format: "json", // or "xml"
-            filePath: "C:/Temp/sketch.json"
+            format: "xml", // or "xml"
+            filePath: "C:/Temp/sketch1.xml"
         }
     });
+    console.log('Shapes saved successfully:', response.data);
     console.log(response.data);
+  }catch (error){
+    console.error('Server responded with error:', error.response.data);
+  }
     break;
 
-        
+    case "Undo":
+      setselectedUndo(true);
+      try{
+      const response = await axios.post('http://localhost:8080/api/shapes/undo')
+      setUndoID(2);
+      setUndoShape("Rectangle");
+      console.log('Shapes undo successfully:');
+    }catch (error){
+      console.error('Server responded with error:', error.response.data);
+    }
+      break;
+
+      case "Redo":
+        setselectedRedo(true);
+        try{
+          const response = await axios.post('http://localhost:8080/api/shapes/redo')
+          setUndoID(2);
+          const initialShape = {
+            id: String(2), // Ensure ID is a string
+            type: "Rectangle",
+            x: 200,
+            y: 200,
+            width: 100,
+            height: 200,
+            color: "black",
+            fill: "transparent",
+            strokeWidth: 2,
+          };
+          setRedoShape(initialShape);
+        console.log('Shapes redo successfully:');
+      }catch (error){
+        console.error('Server responded with error:', error.response.data);
+      }
+        break;
+
+      case "Copy":
+        // setselectedUndo(true);
+        try{
+        await axios.post('http://localhost:8080/api/shapes/copy')
+        console.log('Shapes redo successfully:');
+      }catch (error){
+        console.error('Server responded with error:', error.response.data);
+      }
+        break;
+
         default:
         console.warn(`Unknown button action: ${button}`);
     }
   };
-  
 
   const ShapeSelector = ({ shapes }) => (
     <div style={styles.container}>
@@ -154,6 +206,7 @@ const Toolbar = ({
               setselectedEraser(false);
               setselectedAirbrush(false);
               setselectedFloodFill(false);
+              setselectedUndo(false);
             }}
             key={shape.id}
             style={styles.button}
@@ -225,7 +278,9 @@ const Toolbar = ({
     { id: uuidv4(), label: "Circle" },
     { id: uuidv4(), label: "Ellipse" },
     { id: uuidv4(), label: "LineSegment" },
-    { id: uuidv4(), label: "Triangle" },
+    { id: uuidv4(), label: "IsoscelesTriangle" },
+    { id: uuidv4(), label: "EquilateralTriangle" },
+    { id: uuidv4(), label: "RightTriangle" },
   ];
 
   const row1Colors = ["black", "red", "green", "blue", "yellow"];
@@ -291,7 +346,7 @@ const styles = {
   },
   grid: {
     display: "grid",
-    gridTemplateColumns: "repeat(10, 35px)",
+    gridTemplateColumns: "repeat(4, 50px)",
     gap: "15px",
   },
   button: {

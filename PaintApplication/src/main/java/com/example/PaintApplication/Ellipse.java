@@ -9,19 +9,16 @@ public class Ellipse extends EllipticalShape{
 public Ellipse(){
     super();
 }
-    public Ellipse(int x, int y, String color, boolean isVisible, double radius1,double radius2) {
-        super(x, y, color, isVisible, radius1, radius2);
+    public Ellipse(int x, int y, String color, double radius1,double radius2, String type,int strokeWidth,String fill) {
+        super(x, y, color, radius1, radius2,type, strokeWidth, fill);
     }
 
-    @Override
-    public double getArea() {
-        return Math.PI * radius1 * radius2;
-    }
+
     @Override
     public String getType(){
         return "Ellipse";
     }
     public Ellipse clone() {
-        return new Ellipse(x, y, color, isVisible, radius1,radius2);
+        return new Ellipse(x, y, color, radius1, radius2,type, strokeWidth, fill);
     }
 }
