@@ -110,8 +110,8 @@ public class ShapeService {
         redoStack.clear();
     }
     public void loadShapes(List<Shape> shapes) {
-        shapeRepository.deleteAll(); // Clear the current repository
-        //shapeRepository.saveAll(shapes); // Save the loaded shapes
+        shapeRepository.deleteAll();
+        for (Shape i : shapes){shapeRepository.save(i);}
     }
     public Shape drawFreehand(List<Point> points, String toolType, String color, double thickness) {
         saveToUndoStack();

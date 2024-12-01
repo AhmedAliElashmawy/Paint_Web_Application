@@ -242,18 +242,18 @@ const Toolbar = ({
 
     case "Load":
       loadFile();
-  //     try{
-  //     const response = await axios.post('http://localhost:8080/api/shapes/load', null, {
-  //       params: {
-  //           format: "xml", // or "xml"
-  //           filePath: "C:/Temp/sketch1.xml"
-  //       }
-  //   });
-  //   console.log('Shapes saved successfully:', response.data);
-  //   console.log(response.data);
-  // }catch (error){
-  //   console.error('Server responded with error:', error.response.data);
-  // }
+      try{
+      const response = await axios.post('http://localhost:8080/api/shapes/load', null, {
+        params: {
+            format: "xml", // or "xml"
+            filePath: "C:/Temp/sketch1.xml"
+        }
+    });
+    console.log('Shapes saved successfully:', response.data);
+    console.log(response.data);
+  }catch (error){
+    console.error('Server responded with error:', error.response.data);
+  }
     break;
 
     case "Undo":

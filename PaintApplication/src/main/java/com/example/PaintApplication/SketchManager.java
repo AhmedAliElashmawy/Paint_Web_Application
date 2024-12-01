@@ -2,8 +2,6 @@ package com.example.PaintApplication;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -40,27 +38,27 @@ public class SketchManager {
     }
 
     // Load sketch from XML
-    public void loadSketchFromXML(String filePath) throws IOException {
-        File file = new File(filePath);
-        XmlMapper xmlMapper = new XmlMapper();
-        Sketch sketch = xmlMapper.readValue(file, Sketch.class);
-        shapeService.loadShapes(sketch.getShapes());
+    public void loadSketchFromXML(List<Shape>shapes) throws IOException {
+        // File file = new File(filePath);
+        // XmlMapper xmlMapper = new XmlMapper();
+        // Sketch sketch = xmlMapper.readValue(file, Sketch.class);
+        shapeService.loadShapes(shapes);
     }
 
     // Load sketch from JSON
-    public void loadSketchFromJSON(String filePath) throws IOException {
-        System.out.println("Original file path: " + filePath);
-        filePath = URLDecoder.decode(filePath, StandardCharsets.UTF_8);
-        System.out.println("Decoded file path: " + filePath);
-        File file = new File(filePath);
-        if (!file.exists()) {
-            throw new IOException("File not found at: " + filePath);
-        }
+    public void loadSketchFromJSON(List<Shape>shapes) throws IOException {
+        // System.out.println("Original file path: " + filePath);
+        // filePath = URLDecoder.decode(filePath, StandardCharsets.UTF_8);
+        // System.out.println("Decoded file path: " + filePath);
+        // File file = new File(filePath);
+        // if (!file.exists()) {
+        //     throw new IOException("File not found at: " + filePath);
+        // }
     
-        ObjectMapper objectMapper = new ObjectMapper();
-        System.out.println("");
-        Sketch sketch = objectMapper.readValue(file, Sketch.class);
-        shapeService.loadShapes(sketch.getShapes());
+        // ObjectMapper objectMapper = new ObjectMapper();
+        // System.out.println("");
+        // Sketch sketch = objectMapper.readValue(file, Sketch.class);
+        shapeService.loadShapes(shapes);
     }
     
 }

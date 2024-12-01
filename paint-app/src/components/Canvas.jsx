@@ -22,7 +22,7 @@ const Canvas = ({
   selectedRedo,
   setselectedRedo,
   RedoShape,
-       }) => {
+  }) => {
   const [isDrawing, setIsDrawing] = useState(false);
   const [newShape, setNewShape] = useState(null);
   const [lines, setLines] = useState([]);

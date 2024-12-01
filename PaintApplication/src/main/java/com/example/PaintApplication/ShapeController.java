@@ -93,14 +93,13 @@ public class ShapeController {
     }
 
     @PostMapping(value="/load")
-public String loadShapes(@RequestParam String format, @RequestParam String filePath) {
+public String loadShapes(@RequestParam String format,@RequestBody List<Shape>shapes) {
     try {
-        System.out.println("Loading shapes from: " + filePath); // Debugging
         if ("json".equalsIgnoreCase(format)) {
-            sketchManager.loadSketchFromJSON(filePath);
+            sketchManager.loadSketchFromJSON(shapes);
             return "Shapes loaded successfully from JSON.";
         } else if ("xml".equalsIgnoreCase(format)) {
-            sketchManager.loadSketchFromXML(filePath);
+            sketchManager.loadSketchFromXML(shapes);
             return "Shapes loaded successfully from XML.";
         } else {
             return "Invalid format. Please specify 'json' or 'xml'.";
