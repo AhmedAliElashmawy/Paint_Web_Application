@@ -27,6 +27,8 @@ function App() {
   return (
     <div className="app-container">
       <Toolbar
+        shapes={shapes}
+        setShapes={setShapes}
         selectedShape={selectedShape}
         onShapeSelect={setSelectedShape}
         selectedColor={selectedColor}

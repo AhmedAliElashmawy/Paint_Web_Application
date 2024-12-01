@@ -71,11 +71,12 @@ const Canvas = ({
     else if(selectedEraser){
       const clickedShape = e.target.attrs.id;
       console.log(clickedShape);
-    if (clickedShape) {
-      deleteShape(clickedShape);
-      deleteBrush(clickedShape);
-      deleteLine(clickedShape);
-      deleteAirbrush(clickedShape);
+      if (clickedShape) {
+      console.log("clickedShape");
+      deleteShape(String(clickedShape));
+      deleteBrush(String(clickedShape));
+      deleteLine(String(clickedShape));
+      deleteAirbrush(String(clickedShape));
       }
     }
 
@@ -129,30 +130,16 @@ const Canvas = ({
     }
   };
 
-  const handleMouseClick = (e) => {
-    if (!e || !e.target) {
-      console.error("Event or target is undefined:", e);
-      return;
+  const handleMouseClick = () => {
+    if (!selectedFloodFill) return;  
+    
+    setShapes((prevShapes) => {
+      return prevShapes.map((shape) => ({
+          ...shape,
+          fill: selectedColor,
+      }));
+  });
     }
-  
-    if (!selectedFloodFill) return;
-  
-    const targetShape = e.target;
-  
-    // Check if clicked on a shape
-    if (targetShape.attrs?.id) {
-      const clickedId = targetShape.attrs.id;
-  
-      setShapes((prevShapes) => {
-        const updatedShapes = prevShapes.map((shape) =>
-          shape.id === clickedId ? { ...shape, fill: selectedColor } : shape
-        );
-        return updatedShapes;
-      });
-    } else {
-      console.warn("Flood fill clicked on non-shape target");
-    }
-  };
   
 
   const handleMouseMove = (e) => {
@@ -347,7 +334,7 @@ const Canvas = ({
 
   const handleSelect = (id) => {
     if(selectedFloodFill){
-      handleMouseClick(new MouseEvent("click"));
+      handleMouseClick(new MouseEvent("click"),id);
     }
     else{
       console.log("gg");
@@ -370,25 +357,73 @@ const Canvas = ({
   };
 
   const handleTransformerChange = (id, node) => {
-    const updatedShapes = shapes.map((shape) =>
-      shape.id === String(id)
-        ? {
-            ...shape,
-            x: node.x(),
-            y: node.y(),
-            width: node.width(),
-            height: node.height(),
-            radius: shape.type === "circle" ? node.width() / 2 : shape.radius,
-          }
-        : shape
-    );
+    const updatedShapes = shapes.map((shape) => {
+      if (Number(shape.id) === Number(id)) {
+        switch (shape.type) {
+          case "Rectangle":
+          case "Square":
+            return {
+              ...shape,
+              x: node.x(),
+              y: node.y(),
+              width: node.width(),
+              height: node.height(),
+            };
+  
+          case "Circle":
+            return {
+              ...shape,
+              x: node.x(),
+              y: node.y(),
+              radius1: node.width() / 2,
+            };
+  
+          case "Ellipse":
+            return {
+              ...shape,
+              x: node.x(),
+              y: node.y(),
+              radius1: node.width() / 2,
+              radius2: node.height() / 2,
+            };
+  
+          case "LineSegment":
+            return {
+              ...shape,
+              x: node.x(),
+              y: node.y(),
+              x2: node.x() + (node.width() || 0),
+              y2: node.y() + (node.height() || 0),
+            };
+  
+          case "IsoscelesTriangle":
+          case "EquilateralTriangle":
+          case "RightTriangle":
+            return {
+              ...shape,
+              x1: node.x(),
+              y1: node.y(),
+              x2: node.x() + (node.width() || 0),
+              y2: node.y(),
+              x3: node.x() + (node.width() || 0) / 2,
+              y3: node.y() + (node.height() || 0),
+            };
+  
+          default:
+            return shape; // Leave unhandled shapes untouched
+        }
+      }
+      return shape;
+    });
+  
     setShapes(updatedShapes);
   };
+  
 
 const undo = () => {
   if(selectedUndo && UndoID > 0){
     if(UndoShape === "Rectangle"){
-      deleteShape(String(UndoID));
+      deleteShape((UndoID));
     }else{
       deleteBrush(String(UndoID));
       deleteLine(String(UndoID));
@@ -408,16 +443,17 @@ const redo = () => {
   }
 
   const deleteShape = (id) => {
-    setShapes((prevShapes) => prevShapes.filter((shape) => shape.id !== id));
+    console.log("clickedShape");
+    setShapes((prevShapes) => prevShapes.filter((shape) => String(shape.id) !== id));
   };
   const deleteBrush = (id) => {
-    setBLines((prevShapes) => prevShapes.filter((shape) => shape.id !== id));
+    setBLines((prevShapes) => prevShapes.filter((shape) => String(shape.id) !== id));
   };
   const deleteLine = (id) => {
-    setLines((prevShapes) => prevShapes.filter((shape) => shape.id !== id));
+    setLines((prevShapes) => prevShapes.filter((shape) => String(shape.id) !== id));
   };
   const deleteAirbrush = (id) => {
-    setAirbrushCircles((prev) => prev.filter((circle) => circle.id !== id));
+    setAirbrushCircles((prev) => prev.filter((shape) => String(shape.id) !== id));
   };
   const clearAllAirbrushes = () => {
     setAirbrushCircles([]);
@@ -438,7 +474,7 @@ const redo = () => {
         if (e.target === e.target.getStage()) {
           setSelectedId(null);
         } else {
-          handleMouseClick(e); // Handle mouse click normally
+          handleMouseClick(); // Handle mouse click normally
         }
       }}
       style={{ border: "1px solid black" }}
@@ -446,8 +482,8 @@ const redo = () => {
       <Layer>
       {airbrushCircles.map((circle) => (
     <Circle
-    key={circle.id} // Use id as the key
-    id={circle.id} // Assign id to each circle
+      key={circle.id} // Use id as the key
+      id={circle.id} // Assign id to each circle
       x={circle.x}
       y={circle.y}
       radius={circle.radius}
@@ -495,6 +531,8 @@ const redo = () => {
                 fill={shape.fill}
                 draggable
                 onClick={() => handleSelect(String(shape.id))} // Pass ID as a string
+                isSelected={selectedId === shape.id}
+                onSelect={() => setSelectedId(shape.id)}
               />
             );
           }
@@ -674,15 +712,11 @@ const redo = () => {
         {selectedId &&
           (() => {
             const node = stageRef.current.findOne(`#${selectedId}`);
-            if (!node) {
-              console.warn(`No node found with id: ${selectedId}`);
-              return null;
-            }
             return (
               <Transformer
                 ref={transformerRef}
                 nodes={[node]}
-                onTransformEnd={(e) => {
+                onTransformEnd={() => {
                   handleTransformerChange(selectedId, node);
                 }}
                 borderStroke="blue"

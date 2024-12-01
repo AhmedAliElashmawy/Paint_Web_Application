@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import axios from "axios";
+import { saveAs } from "file-saver";
+import xmljs from "xml-js";
 import "./Toolbar.css";
 
 const Toolbar = ({
+  shapes,
+  setShapes,
   onShapeSelect,
   selectedColor,
   onColorSelect,
@@ -51,9 +55,7 @@ const Toolbar = ({
   const ButtonGroup = ({ buttons }) => (
     <div className="buttons">
       {buttons.map((button, index) =>
-        button === "divider" ? (
-          <div key={index} className="divider">|</div>
-        ) : (
+      (
           <button key={index} title={button.label || button} onClick={() => ButtonFunctions(button.label)}>
             {button.icon ? (
               <img
@@ -70,7 +72,115 @@ const Toolbar = ({
     </div>
   );
 
-  const ButtonFunctions = async (button) => {
+  const saveAsFile = async (shapes) => {
+    try {
+      // Open the Save File Picker with options for JSON and XML formats
+      const fileHandle = await window.showSaveFilePicker({
+        suggestedName: "drawing",
+        types: [
+          {
+            description: "Supported Formats",
+            accept: {
+              "application/json": [".json"],
+              "application/xml": [".xml"],
+            },
+          },
+        ],
+      });
+  
+      // Determine the selected format based on the file extension
+      const fileName = fileHandle.name;
+      const format = fileName.endsWith(".json") ? "json" : fileName.endsWith(".xml") ? "xml" : null;
+  
+      if (!format) {
+        throw new Error("Unsupported file format selected.");
+      }
+  
+      // Prepare file content based on the selected format
+      let content, mimeType;
+      if (format === "json") {
+        content = JSON.stringify(shapes, null, 2);
+        mimeType = "application/json";
+      } else if (format === "xml") {
+        const xml = xmljs.js2xml({ shapes: { shape: shapes } }, { compact: true, spaces: 2 });
+        content = xml;
+        mimeType = "application/xml";
+      }
+  
+      // Write the content to the file
+      const writableStream = await fileHandle.createWritable();
+      await writableStream.write(new Blob([content], { type: mimeType }));
+      await writableStream.close();
+  
+      alert(`File saved successfully as ${fileHandle.name}`);
+    } catch (err) {
+      if (err.name !== "AbortError") {
+        console.error("File save cancelled or failed:", err);
+      }
+    }
+  };
+  
+  const loadFile = async () => {
+    try {
+      // Open the file picker for JSON and XML files
+      const [fileHandle] = await window.showOpenFilePicker({
+        types: [
+          {
+            description: "Supported Files",
+            accept: {
+              "application/json": [".json"],
+              "application/xml": [".xml"],
+            },
+          },
+        ],
+        multiple: false,
+      });
+  
+      // Get file content
+      const file = await fileHandle.getFile();
+      const content = await file.text();
+  
+      // Determine file type and parse accordingly
+      let loadedShapes;
+      if (file.name.endsWith(".json")) {
+        loadedShapes = JSON.parse(content);
+      } else if (file.name.endsWith(".xml")) {
+        const parsedXML = xmljs.xml2js(content, { compact: true });
+        loadedShapes = parsedXML.shapes.shape.map((shape) => ({
+          ...shape,
+          type: shape.type._text,
+          id: shape.id._text,
+          x: parseInt(shape.x._text),
+          y: parseInt(shape.y._text),
+          color: shape.color._text,
+          width: parseInt(shape.width._text),
+          height: parseInt(shape.height._text),
+          strokeWidth: parseInt(shape.strokeWidth._text),
+          fill: shape.fill._text,
+          radius1: shape.radius1 ? parseFloat(shape.radius1._text) : 0,
+          radius2: shape.radius1 ? parseFloat(shape.radius2._text) : 0,
+          x1: shape.x1 ? parseInt(shape.x1._text) : null,
+          y1: shape.y1 ? parseInt(shape.y1._text) : null,
+          x2: shape.x2 ? parseInt(shape.x2._text) : null,
+          y2: shape.y2 ? parseInt(shape.y2._text) : null,
+          x3: shape.x3 ? parseInt(shape.x3._text) : null,
+          y3: shape.y3 ? parseInt(shape.y3._text) : null,
+        }));
+      } else {
+        throw new Error("Unsupported file format");
+      }
+  
+      // Update shapes in state
+      setShapes(loadedShapes);
+      alert(`File ${file.name} loaded successfully.`);
+    } catch (err) {
+      if (err.name !== "AbortError") {
+        console.error("File load cancelled or failed:", err);
+      }
+    }
+  };
+
+  const ButtonFunctions = async (button,event,) => {
     onShapeSelect(null);
     setselectedPencil(false);
     setselectedBrush(false);
@@ -110,38 +220,40 @@ const Toolbar = ({
         setFillSelect(true); // Assuming `setFillSelect` is a state updater
         break;
   
-        case "Save":
-    try {
-        const response = await axios.post('http://localhost:8080/api/shapes/save', null, {
-            params: {
-                format: "xml", // Specify format
-                filePath: "C:/Temp/sketch1.xml"
-                }
-        });
-        console.log('Shapes saved successfully:', response.data);
-    } catch (error) {
-        console.error('Did not save');
-        if (error.response) {
-            console.error('Server responded with error:', error.response.data);
-        } else {
-            console.error('Error:', error.message);
-        }
-    }
+      case "Save":
+      saveAsFile(shapes);
+    //   try {
+    //     const response = await axios.post('http://localhost:8080/api/shapes/save', null, {
+    //         params: {
+    //             format: "json", // Specify format
+    //             filePath: "C:/Temp/sketch.json"
+    //             }
+    //     });
+    //     console.log('Shapes saved successfully:', response.data);
+    // } catch (error) {
+    //     console.error('Did not save');
+    //     if (error.response) {
+    //         console.error('Server responded with error:', error.response.data);
+    //     } else {
+    //         console.error('Error:', error.message);
+    //     }
+    // }
     break;
 
     case "Load":
-      try{
-      const response = await axios.post('http://localhost:8080/api/shapes/load', null, {
-        params: {
-            format: "xml", // or "xml"
-            filePath: "C:/Temp/sketch1.xml"
-        }
-    });
-    console.log('Shapes saved successfully:', response.data);
-    console.log(response.data);
-  }catch (error){
-    console.error('Server responded with error:', error.response.data);
-  }
+      loadFile();
+  //     try{
+  //     const response = await axios.post('http://localhost:8080/api/shapes/load', null, {
+  //       params: {
+  //           format: "xml", // or "xml"
+  //           filePath: "C:/Temp/sketch1.xml"
+  //       }
+  //   });
+  //   console.log('Shapes saved successfully:', response.data);
+  //   console.log(response.data);
+  // }catch (error){
+  //   console.error('Server responded with error:', error.response.data);
+  // }
     break;
 
     case "Undo":
@@ -194,13 +306,13 @@ const Toolbar = ({
     }
   };
 
-  const ShapeSelector = ({ shapes }) => (
+  const ShapeSelector = ({ shape }) => (
     <div style={styles.container}>
       <div style={styles.grid}>
-        {shapes.map((shape) => (
+        {shape.map((shap) => (
           <button
             onClick={() => {
-              onShapeSelect(shape.label)
+              onShapeSelect(shap.label)
               setselectedPencil(false);
               setselectedBrush(false);
               setselectedEraser(false);
@@ -208,18 +320,18 @@ const Toolbar = ({
               setselectedFloodFill(false);
               setselectedUndo(false);
             }}
-            key={shape.id}
+            key={shap.id}
             style={styles.button}
-            title={shape.label}
+            title={shap.label}
           >
             {shape.icon ? (
               <img
-                src={shape.icon}
-                alt={shape.label}
+                src={shap.icon}
+                alt={shap.label}
                 className="button-icon"
               />
             ) : (
-              shape.label
+              shap.label
             )}
           </button>
         ))}
@@ -272,7 +384,7 @@ const Toolbar = ({
     ],
   };
 
-  const shapes = [
+  const shape = [
     { id: uuidv4(), label: "Square" },
     { id: uuidv4(), label: "Rectangle", icon: "/icons/rectangle.svg" },
     { id: uuidv4(), label: "Circle" },
@@ -301,7 +413,7 @@ const Toolbar = ({
         <ButtonGroup buttons={buttonsConfig.menu4} />
       </div>
       <span className="divider"></span>
-      <ShapeSelector shapes={shapes} />
+      <ShapeSelector shape={shape} />
       <span className="divider"></span>
       <div className="toolbox">
         <LineWidthMenu

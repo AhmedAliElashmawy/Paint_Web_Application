@@ -92,7 +92,7 @@ public class ShapeController {
         }
     }
 
-    @PostMapping("/load")
+    @PostMapping(value="/load")
 public String loadShapes(@RequestParam String format, @RequestParam String filePath) {
     try {
         System.out.println("Loading shapes from: " + filePath); // Debugging

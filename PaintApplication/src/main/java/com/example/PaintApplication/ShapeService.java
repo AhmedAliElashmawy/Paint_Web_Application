@@ -86,7 +86,7 @@ public class ShapeService {
     }
     public void undo() {
         if (!undoStack.isEmpty()) {
-            // redoStack.push(new ArrayList<>(shapeRepository.findAll()));
+            redoStack.push(new ArrayList<>(shapeRepository.findAll()));
             List<Shape> previousState = undoStack.pop();
             shapeRepository.deleteAll();
             shapeRepository.saveAll(previousState);
@@ -111,7 +111,7 @@ public class ShapeService {
     }
     public void loadShapes(List<Shape> shapes) {
         shapeRepository.deleteAll(); // Clear the current repository
-        shapeRepository.saveAll(shapes); // Save the loaded shapes
+        //shapeRepository.saveAll(shapes); // Save the loaded shapes
     }
     public Shape drawFreehand(List<Point> points, String toolType, String color, double thickness) {
         saveToUndoStack();
