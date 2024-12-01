@@ -34,7 +34,13 @@ public abstract class Shape implements Cloneable {
     int strokeWidth;
     String fill;
     double radius1;
-
+    double radius2;
+    int x1;
+    int y1;
+    int x2;
+    int y2;
+    int x3;
+    int y3;
 
     public String getId() {
         return id;
@@ -110,6 +116,58 @@ public abstract class Shape implements Cloneable {
 
     public void setRadius1(double radius1) {
         this.radius1 = radius1;
+    }
+
+    public double getRadius2() {
+        return radius2;
+    }
+
+    public void setRadius2(double radius2) {
+        this.radius2 = radius2;
+    }
+
+    public int getx1() {
+        return x1;
+    }
+
+    public void setx1(int x1) {
+        this.x1 = x1;
+    }
+    public int getx2() {
+        return x2;
+    }
+
+    public void setx2(int x2) {
+        this.x2 = x2;
+    }
+    public int getx3() {
+        return x3;
+    }
+
+    public void setx3(int x3) {
+        this.x3 = x3;
+    }
+
+    public int gety1() {
+        return y1;
+    }
+
+    public void sety1(int y1) {
+        this.y1 = y1;
+    }
+    public int gety2() {
+        return y2;
+    }
+
+    public void sety2(int y2) {
+        this.y2 = y2;
+    }
+    public int gety3() {
+        return y3;
+    }
+
+    public void sety3(int y3) {
+        this.y3 = y3;
     }
 
     public static List<Shape> getShapeList() {
