@@ -17,8 +17,8 @@ public class Ellipse extends EllipticalShape{
 public Ellipse(){
     super();
 }
-    public Ellipse(int x, int y, String color, double radius1,double radius2, String type,int strokeWidth,String fill) {
-        super(x, y, color, radius1, radius2,type, strokeWidth, fill);
+    public Ellipse(int x, int y, String color, double radius1,double radius2, String type,int strokeWidth,String fill,double opacity) {
+        super(x, y, color, radius1, radius2,type, strokeWidth, fill,opacity);
     }
 
 
@@ -27,6 +27,6 @@ public Ellipse(){
         return "Ellipse";
     }
     public Ellipse clone() {
-        return new Ellipse(x, y, color, radius1, radius2,type, strokeWidth, fill);
+        return new Ellipse(x, y, color, radius1, radius2,type, strokeWidth, fill,opacity);
     }
 }

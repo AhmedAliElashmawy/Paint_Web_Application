@@ -23,6 +23,8 @@ function App() {
   const [selectedRedo, setSelectedRedo] = useState(false);
   const [RedoID, setRedoID] = useState(0);
   const [RedoShape, setRedoShape] = useState(null);
+  const [selectedText, setSelectedText] = useState(false);
+  const [textValue, setTextValue] = useState("");
 
   return (
     <div className="app-container">
@@ -55,6 +57,10 @@ function App() {
         selectedRedo={selectedRedo}
         setselectedRedo={setSelectedRedo}
         setRedoShape={setRedoShape}
+        setSelectedText={setSelectedText}
+        selectedText={selectedText}
+        textValue={textValue}
+        setTextValue={setTextValue}
         />
       <Canvas
         shapes={shapes}
@@ -76,6 +82,10 @@ function App() {
         setselectedRedo={setSelectedRedo}
         selectedRedo={selectedRedo}
         RedoShape={RedoShape}
+        setSelectedText={setSelectedText}
+        selectedText={selectedText}
+        textValue={textValue}
+        setTextValue={setTextValue}
         />
       <Bottombar/>
     </div>

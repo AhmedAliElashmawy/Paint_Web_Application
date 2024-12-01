@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import axios from "axios";
-import { Stage, Layer, Rect, Circle, Ellipse, Line, RegularPolygon, Transformer } from "react-konva";
+import { Stage, Layer, Rect, Circle, Ellipse, Line, RegularPolygon, Transformer,Text } from "react-konva";
 
 const Canvas = ({ 
   shapes,
@@ -22,6 +22,10 @@ const Canvas = ({
   selectedRedo,
   setselectedRedo,
   RedoShape,
+  setSelectedText,
+  selectedText,
+  textValue,
+  setTextValue,
   }) => {
   const [isDrawing, setIsDrawing] = useState(false);
   const [newShape, setNewShape] = useState(null);
@@ -33,6 +37,14 @@ const Canvas = ({
   const stageRef = useRef(null);
   const transformerRef = useRef(null);
   const [selectedId, setSelectedId] = useState(null);
+  const [texts, setTexts] = useState([
+    { id: 1, text: 'Click to edit', x: 50, y: 50 },
+  ]);
+    const [textOP, setTextOP] = useState(0);
+  const [isEditing, setIsEditing] = useState(true);
+  const [editingText, setEditingText] = useState("");
+  const [inputPosition, setInputPosition] = useState({ x: 0, y: 0 });
+  const inputRef = useRef(null);
 
   const handleShapeSelect = async (Shape) => {
     const stage = stageRef.current;
@@ -78,15 +90,32 @@ const Canvas = ({
       deleteLine(String(clickedShape));
       deleteAirbrush(String(clickedShape));
       }
+    }else if(selectedText){
+      const pos = e.target.getStage().getPointerPosition();
+  
+      setInputPosition({x: pos.x + 10,y: pos.y + 10})
+      const newShape = {
+        id: `${Date.now()}-${Math.random()}`,
+        type: "Text",
+        text: textValue,
+        x: pos.x,
+        y: pos.y,
+        color: selectedColor,
+      };
+      setTextValue("");
+      console.log(newShape.id);
+      setSelectedText(false);
+      setShapes((prevShapes) => [...prevShapes, newShape]);
+      setTextOP(1);
+      setIsEditing(true);
     }
 
     else if (selectedShape) {
-      // const shapeData = await handleShapeSelect(selectedShape);
       const fill = selectedFill ? selectedColor : "transparent";
       if (selectedShape === "IsoscelesTriangle" || selectedShape === "EquilateralTriangle" || selectedShape === "RightTriangle") {
         const pos = e.target.getStage().getPointerPosition();
         setNewShape({
-          // id: String(shapeData.id), // Ensure ID is a string
+          id: `${Date.now()}-${Math.random()}`,
           type: selectedShape,
           x1: pos.x,
           y1: pos.y,
@@ -94,24 +123,11 @@ const Canvas = ({
           fill,
           strokeWidth: selectedSize,
         });
-      // }else if(selectedShape === "LineSegment"){
-      //   const pos = e.target.getStage().getPointerPosition();
-      //   setNewShape({
-      //     // id: String(shapeData.id), // Ensure ID is a string
-      //     type: selectedShape,
-      //     x: pos.x,
-      //     y: pos.y,
-      //     x2: pos.x,
-      //     y2: pos.y,
-      //     color: selectedColor, // Set your default color
-      //     fill,
-      //     strokeWidth: selectedSize, // Set your stroke width
-      //   });
       }
       else{
         const pos = e.target.getStage().getPointerPosition();
       const initialShape = {
-        // id: String(shapeData.id), // Ensure ID is a string
+        id: `${Date.now()}-${Math.random()}`,
         type: selectedShape,
         x:  pos.x,
         y: pos.y,
@@ -142,7 +158,7 @@ const Canvas = ({
     }
   
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove = async (e) => {
     if (!isDrawing) return;
     if(selectedPencil){
       const stage = e.target.getStage();
@@ -160,17 +176,19 @@ const Canvas = ({
     
       // Create small circles (airbrush effect)
       const newCircle = {
-        // id: `airbrush-${Date.now()}-${Math.random()}`,
+        // id: `${Date.now()}-${Math.random()}`,
+        type: "AirBrush",
         x: pointerPosition.x + Math.random() * 10 - 5, // Random variation for a "spray" effect
         y: pointerPosition.y + Math.random() * 10 - 5, // Random variation
-        radius: Math.random() * 5 + 2, // Random radius to vary size
+        radius1: Math.random() * 5 + 2, // Random radius to vary size
         opacity: Math.random() * 0.3 + 0.1, // Semi-transparent
         color: selectedColor, // Color from the airbrush tool
         strokeWidth: selectedSize, // Brush size
       };
     
       // Add this new circle to the airbrushCircles state
-      setAirbrushCircles((prev) => [...prev, newCircle]);
+      const shapeData = await handleShapeSelect(newCircle);
+      setShapes((prev) => [...prev, shapeData]);
       }
     else if (selectedShape === "EquilateralTriangle") {
       const pos = e.target.getStage().getPointerPosition();
@@ -185,7 +203,6 @@ const Canvas = ({
       const height = (sideLength * Math.sqrt(3)) / 2;  // Height of the equilateral triangle
       const x3 = (x1 + x2) / 2;  // Midpoint of AB
       const y3 = y1 - height;  // Height above the base
-    
 
       setNewShape((prev) => ({
         ...prev,
@@ -203,7 +220,7 @@ const Canvas = ({
       const x2 = pos.x;
       const y2 = y1; // Same y-coordinate as the first vertex
     
-      // Third vertex (C) is vertically above the midpoint of AB
+
       const x3 = (x1 + x2) / 2;  // Midpoint of AB
       const y3 = pos.y;  // Height above the base
     
@@ -224,7 +241,6 @@ const Canvas = ({
       const x2 = pos.x;
       const y2 = y1; // Same y-coordinate as the first vertex
     
-      // Third vertex (C) is vertically above the midpoint of AB
       const x3 = x1;  // Midpoint of AB
       const y3 = pos.y;  // Height above the base
     
@@ -300,13 +316,15 @@ const Canvas = ({
     }
     else if (isDrawing && selectedPencil ) {
       const newLineStroke = {
-        id: `line-${Date.now()}`,
+        id: `${Date.now()}-${Math.random()}`,
+          type: "Pencil",
         points: currentLine,
         color: "black",
         strokeWidth: 2,
       };
   
-      setLines((prev) => [...prev, newLineStroke]);
+      const shapeData = await handleShapeSelect(newLineStroke);
+      setShapes([...shapes, shapeData]);
       setCurrentLine([]);
     }
     else if (isDrawing && selectedAirbrush) {
@@ -314,13 +332,14 @@ const Canvas = ({
     }
     else if (isDrawing && selectedBrush) {
       const newBrushStroke = {
-        id: `brush-${Date.now()}`, // Generate a unique ID
+        id: `${Date.now()}-${Math.random()}`,
+        type: "Brush",
         points: BcurrentLine,
         color: selectedColor, // Use the selected color for this stroke
         strokeWidth: selectedSize, // Use the selected stroke size
       };
-  
-      setBLines((prev) => [...prev, newBrushStroke]);
+      const shapeData = await handleShapeSelect(newBrushStroke);
+      setShapes([...shapes, shapeData]);
       setBCurrentLine([]);
     }
   
@@ -473,50 +492,73 @@ const redo = () => {
         // Deselect if clicked outside
         if (e.target === e.target.getStage()) {
           setSelectedId(null);
-        } else {
-          handleMouseClick(); // Handle mouse click normally
-        }
+          // if(selectedText){
+          // handleTextClick(e);
+          // }
+        }else{
+           handleMouseClick(); // Handle mouse click normally
+}
       }}
       style={{ border: "1px solid black" }}
     >
       <Layer>
-      {airbrushCircles.map((circle) => (
-    <Circle
-      key={circle.id} // Use id as the key
-      id={circle.id} // Assign id to each circle
-      x={circle.x}
-      y={circle.y}
-      radius={circle.radius}
-      fill={circle.color}
-      opacity={circle.opacity}
-      strokeWidth={circle.strokeWidth}
-      onClick={() => clearAllAirbrushes()}
-    />
-  ))}
-      {lines.map((line) => (
-        <Line
-          key={line.id}
-          id={line.id}
-          points={line.points}
-          stroke={line.color} // Pencil always uses black
-          strokeWidth={line.strokeWidth} // Pencil stroke width
-          lineCap="round"
-          lineJoin="round"
-        />
-      ))}
-
-      {Blines.map((Bline) => (
-        <Line
-        key={Bline.id}              // Use the unique ID as the key
-        id={Bline.id}
-        points={Bline.points}       // Points for this stroke
-        stroke={Bline.color}        // Color for this stroke
-        strokeWidth={Bline.strokeWidth} // Stroke width for this stroke
-        lineCap="round"
-        lineJoin="round"
-        />
-      ))}
         {shapes.map((shape) => {
+          if (shape.type === "Text") {
+            return (
+            <Text
+              key={shape.id}              // Use the unique ID as the key
+              id={shape.id}
+              text={shape.text}
+              x={shape.x}
+              y={shape.y}
+              color = {shape.color}
+              opacity={1}
+              fontSize={24}
+              draggable
+            />
+            );
+          }
+          if (shape.type === "Pencil") {
+            return (
+            <Line
+            key={shape.id}              // Use the unique ID as the key
+            id={shape.id}
+            points={shape.points}       // Points for this stroke
+            stroke={shape.color}        // Color for this stroke
+            strokeWidth={shape.strokeWidth} // Stroke width for this stroke
+            lineCap="round"
+            lineJoin="round"
+        />
+            );
+          }
+          if (shape.type === "AirBrush") {
+            return (
+              <Circle
+              key={shape.id} // Use id as the key
+              id={shape.id} // Assign id to each circle
+              x={shape.x}
+              y={shape.y}
+              radius={shape.radius1}
+              fill={shape.color}
+              opacity={shape.opacity}
+              strokeWidth={shape.strokeWidth}
+              onClick={() => clearAllAirbrushes()}
+            />
+            );
+          }
+          if (shape.type === "Brush") {
+            return (
+            <Line
+            key={shape.id}              // Use the unique ID as the key
+            id={shape.id}
+            points={shape.points}
+            stroke={shape.color}
+            strokeWidth={shape.strokeWidth}
+            lineCap="round"
+            lineJoin="round"
+        />
+            );
+          }
           if (shape.type === "Rectangle") {
             return (
               <Rect

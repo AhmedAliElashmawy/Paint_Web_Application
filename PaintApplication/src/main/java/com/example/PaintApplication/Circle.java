@@ -20,8 +20,8 @@ public Circle(){
     super();
 }
 
-    public Circle(int x, int y, String color, double radius1,String type,int strokeWidth,String fill) {
-        super(x, y, color, radius1, radius1, type,strokeWidth,fill);
+    public Circle(int x, int y, String color, double radius1,String type,int strokeWidth,String fill,double opacity) {
+        super(x, y, color, radius1, radius1, type,strokeWidth,fill,opacity);
     }
 
     @Override
@@ -31,6 +31,6 @@ public Circle(){
 
     @Override
     public Circle clone() {
-        return new Circle(x, y, color, radius1, type,strokeWidth,fill);
+        return new Circle(x, y, color, radius1, type,strokeWidth,fill,opacity);
     }
 }

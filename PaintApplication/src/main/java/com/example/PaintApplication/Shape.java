@@ -24,6 +24,9 @@ import lombok.Data;
         @JsonSubTypes.Type(value = IsoscelesTriangle.class, name = "IsoscelesTriangle"),
         @JsonSubTypes.Type(value = EquilateralTriangle.class, name = "EquilateralTriangle"),
         @JsonSubTypes.Type(value = RightTriangle.class, name = "RightTriangle"),
+        @JsonSubTypes.Type(value = PencilandBrush.class, name = "Pencil"),
+        @JsonSubTypes.Type(value = PencilandBrush.class, name = "Brush"),
+        @JsonSubTypes.Type(value = AirBrush.class, name = "AirBrush"),
 })
 
 @Data

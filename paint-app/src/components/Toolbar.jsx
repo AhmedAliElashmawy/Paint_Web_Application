@@ -24,9 +24,13 @@ const Toolbar = ({
   setUndoShape,
   setselectedRedo,
   setRedoShape,
+  setSelectedText,
+  textValue,
+  setTextValue,
 }) => {
   const [selectedWidth, setSelectedWidth] = useState(selectedSize || 1);
   const [currentColor, setCurrentColor] = useState(selectedColor || "#000000");
+  const [textInputVisible, setTextInputVisible] = useState(false);
 
   const handleColorSelect = (color) => {
     setCurrentColor(color);
@@ -172,6 +176,17 @@ const Toolbar = ({
   
       // Update shapes in state
       setShapes(loadedShapes);
+      try{
+        const response = await axios.post('http://localhost:8080/api/shapes/load', loadedShapes, {
+          params: {
+              format:file.name.endsWith(".json") ? "json" : "xml", // or "xml"
+          }
+      });
+      console.log('Shapes saved successfully:', response.data);
+      console.log(response.data);
+    }catch (error){
+      console.error('Server responded with error:', error.response.data);
+    }
       alert(`File ${file.name} loaded successfully.`);
     } catch (err) {
       if (err.name !== "AbortError") {
@@ -191,7 +206,13 @@ const Toolbar = ({
     setselectedFloodFill(false);
     setselectedUndo(false);
     setselectedRedo(false);
+    setSelectedText(false);
     switch (button) {
+      case "Text":
+      setTextInputVisible(true);
+      setSelectedText(true);
+      break;
+
       case "Flood":
       setselectedFloodFill(true);
       break;
@@ -242,18 +263,7 @@ const Toolbar = ({
 
     case "Load":
       loadFile();
-      try{
-      const response = await axios.post('http://localhost:8080/api/shapes/load', null, {
-        params: {
-            format: "xml", // or "xml"
-            filePath: "C:/Temp/sketch1.xml"
-        }
-    });
-    console.log('Shapes saved successfully:', response.data);
-    console.log(response.data);
-  }catch (error){
-    console.error('Server responded with error:', error.response.data);
-  }
+
     break;
 
     case "Undo":
@@ -319,6 +329,7 @@ const Toolbar = ({
               setselectedAirbrush(false);
               setselectedFloodFill(false);
               setselectedUndo(false);
+              setSelectedText(false);
             }}
             key={shap.id}
             style={styles.button}
@@ -424,6 +435,24 @@ const Toolbar = ({
         <br />
         <ButtonGroup buttons={buttonsConfig.menu5} />
       </div>
+      { textInputVisible && (
+  <input
+    type="text"
+    style={{
+      position: "absolute",
+      top: "105px",
+      left: "185px",
+      fontSize: "24px",
+      zIndex: 9999,
+      backgroundColor: "white",
+      border: "2px solid #ccc",
+    }}
+    value={textValue}
+    onChange={(e) => setTextValue(e.target.value)}
+    onBlur={() => setTextInputVisible(false)} // Hide input when it loses focus
+    autoFocus
+  />
+)}
       <div className="color-picker-container">
         <button
           className="big-color-button"
