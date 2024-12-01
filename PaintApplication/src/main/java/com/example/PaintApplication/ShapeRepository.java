@@ -1,9 +1,6 @@
-package com.example.PaintApplication;
+// package com.example.PaintApplication;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+// import org.springframework.data.jpa.repository.JpaRepository;
 
-@Repository
-public interface ShapeRepository extends JpaRepository<Shape, Long> {
-}
-
+// public interface ShapeRepository extends JpaRepository<Shape,Long> {
+// }

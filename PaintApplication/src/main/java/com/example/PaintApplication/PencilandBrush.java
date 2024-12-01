@@ -1,17 +1,13 @@
 package com.example.PaintApplication;
 
-import jakarta.persistence.*;
 
 import java.util.List;
 
-@Entity
+
 public class PencilandBrush implements Cloneable{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String type;
-    @ElementCollection
     private List<Double> points;
     private String color;
     private double strokeWidth;

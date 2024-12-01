@@ -1,11 +1,8 @@
 package com.example.PaintApplication;
 
-import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.Version;
-import lombok.Data;
 
-@Data
-@MappedSuperclass
+
+
 public abstract class Polygon extends Shape {
     public Polygon(){
 

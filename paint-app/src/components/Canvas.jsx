@@ -49,10 +49,9 @@ const Canvas = ({
   const handleShapeSelect = async (Shape) => {
     const stage = stageRef.current;
     const pointerPosition = stage.getPointerPosition();
-
+    console.log(Shape);
     try {
       const apiUrl = `http://localhost:8080/api/shapes`;
-
       const response = await axios.post(apiUrl, Shape);
       console.log("Created Shape:", response.data);
       console.log(response.data.id);
@@ -176,7 +175,7 @@ const Canvas = ({
     
       // Create small circles (airbrush effect)
       const newCircle = {
-        // id: `${Date.now()}-${Math.random()}`,
+        id: `${Date.now()}-${Math.random()}`,
         type: "AirBrush",
         x: pointerPosition.x + Math.random() * 10 - 5, // Random variation for a "spray" effect
         y: pointerPosition.y + Math.random() * 10 - 5, // Random variation

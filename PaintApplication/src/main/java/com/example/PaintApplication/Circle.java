@@ -1,13 +1,5 @@
 package com.example.PaintApplication;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import lombok.Data;
-
-@Data
-@Entity
 public class Circle extends EllipticalShape {
     private String type;
     private int x;

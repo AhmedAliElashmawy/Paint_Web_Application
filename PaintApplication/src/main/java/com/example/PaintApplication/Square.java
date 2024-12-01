@@ -1,10 +1,6 @@
 package com.example.PaintApplication;
 
-import jakarta.persistence.Entity;
-import lombok.Data;
 
-@Data
-@Entity
 public class Square extends Polygon {
     private String type;
     private int x;

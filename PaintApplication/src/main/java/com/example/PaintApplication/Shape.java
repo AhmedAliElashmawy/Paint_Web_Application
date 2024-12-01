@@ -1,15 +1,11 @@
 package com.example.PaintApplication;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import lombok.Data;
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,  // Include type info in JSON as a property
         include = JsonTypeInfo.As.PROPERTY,
@@ -24,31 +20,27 @@ import lombok.Data;
         @JsonSubTypes.Type(value = IsoscelesTriangle.class, name = "IsoscelesTriangle"),
         @JsonSubTypes.Type(value = EquilateralTriangle.class, name = "EquilateralTriangle"),
         @JsonSubTypes.Type(value = RightTriangle.class, name = "RightTriangle"),
-        @JsonSubTypes.Type(value = PencilandBrush.class, name = "Pencil"),
-        @JsonSubTypes.Type(value = PencilandBrush.class, name = "Brush"),
-        @JsonSubTypes.Type(value = AirBrush.class, name = "AirBrush"),
 })
 
-@Data
-@Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Shape implements Cloneable{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+
+public abstract class Shape implements Cloneable {
+    String id;
     int x;
     int y;
     String color;
     String type;
     long width;
-     long height;
-     int strokeWidth;
-     String fill;
-    public int getId() {
+    long height;
+    int strokeWidth;
+    String fill;
+    double radius1;
+
+
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -75,13 +67,91 @@ public abstract class Shape implements Cloneable{
     public void setColor(String color) {
         this.color = color;
     }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public long getWidth() {
+        return width;
+    }
+
+    public void setWidth(long width) {
+        this.width = width;
+    }
+
+    public long getHeight() {
+        return height;
+    }
+
+    public void setHeight(long height) {
+        this.height = height;
+    }
+
+    public int getStrokeWidth() {
+        return strokeWidth;
+    }
+
+    public void setStrokeWidth(int strokeWidth) {
+        this.strokeWidth = strokeWidth;
+    }
+
+    public String getFill() {
+        return fill;
+    }
+
+    public void setFill(String fill) {
+        this.fill = fill;
+    }
+
+    public double getRadius1() {
+        return radius1;
+    }
+
+    public void setRadius1(double radius1) {
+        this.radius1 = radius1;
+    }
+
+    public static List<Shape> getShapeList() {
+        return shapeList;
+    }
+
+    public static void setShapeList(List<Shape> shapeList) {
+        Shape.shapeList = shapeList;
+    }
+
+
+
+    // Static list to store shapes
+    private static List<Shape> shapeList = new ArrayList<>();
+
+    // Methods to manage the array of shapes
+    public static void addShape(Shape shape) {
+        shapeList.add(shape);
+
+    }
+
+    public static List<Shape> getShapes() {
+        return shapeList;
+    }
+
+    public static void clearShapes() {
+        shapeList.clear();
+
+    }
+
     public abstract String getType();
+    public static void setShapes(List<Shape> shapes) {
+        shapeList = shapes;
+    }
     @Override
     public Shape clone() {
+
         try {
             return (Shape) super.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException("Cloning failed for shape: " + getType());
         }
+
     }
 }

@@ -1,11 +1,5 @@
 package com.example.PaintApplication;
-import jakarta.persistence.Entity;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
-@Entity
 public class EquilateralTriangle extends Triangle{
     private String type;
     private double x1;

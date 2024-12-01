@@ -1,10 +1,5 @@
 package com.example.PaintApplication;
 
-import jakarta.persistence.Entity;
-import lombok.Data;
-
-@Data
-@Entity
 public class AirBrush extends EllipticalShape{
     private double opacity;
     public AirBrush(){

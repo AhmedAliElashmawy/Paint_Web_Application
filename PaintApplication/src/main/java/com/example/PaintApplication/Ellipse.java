@@ -1,10 +1,5 @@
 package com.example.PaintApplication;
 
-import jakarta.persistence.Entity;
-import lombok.Data;
-
-@Data
-@Entity
 public class Ellipse extends EllipticalShape{
     private String type;
     private int x;
