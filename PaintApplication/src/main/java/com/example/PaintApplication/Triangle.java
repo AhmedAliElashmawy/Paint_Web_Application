@@ -1,10 +1,6 @@
 package com.example.PaintApplication;
 
-import jakarta.persistence.Entity;
-import lombok.Data;
 
-@Data
-@Entity
 public class Triangle extends Polygon {
     protected double x1,y1;
     protected double x2,y2;

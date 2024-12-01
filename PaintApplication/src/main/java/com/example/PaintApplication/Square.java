@@ -1,19 +1,9 @@
 package com.example.PaintApplication;
 
-import jakarta.persistence.Entity;
-import lombok.Data;
 
-@Data
-@Entity
 public class Square extends Polygon {
-    private String type;
-    private int x;
-    private int y;
     private long width;
     private long height;
-    private String color;
-    private int strokeWidth;
-    private String fill;
     public Square(){
         super();
     }

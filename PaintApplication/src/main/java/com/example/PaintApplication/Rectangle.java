@@ -1,22 +1,7 @@
 package com.example.PaintApplication;
 
-import jakarta.persistence.Entity;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode(callSuper = true)
-
-@Data
-@Entity
 public class Rectangle extends Polygon {
-    private String type;
-    private int x;
-    private int y;
-    private long width;
-    private long height;
-    private String color;
-    private int strokeWidth;
-    private String fill;
 
     public Rectangle() {
         super();
