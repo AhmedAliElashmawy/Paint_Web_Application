@@ -6,15 +6,16 @@ public abstract class EllipticalShape extends Shape {
     public EllipticalShape(){
 
     }
-    public EllipticalShape(int x, int y, String color, boolean isVisible, double radius1, double radius2) {
+    public EllipticalShape(int x, int y, String color, double radius1, double radius2, String type,int strokeWidth,String fill) {
         this.x = x;
         this.y = y;
         this.color = color;
-        this.isVisible = isVisible;
         this.radius1 = radius1;
         this.radius2 = radius2;
+        this.type = type;
+        this.strokeWidth = strokeWidth;
+        this.fill = fill;
     }
-    public abstract double getArea();
     @Override
     public String getType() {
         return "EllipticalShape";

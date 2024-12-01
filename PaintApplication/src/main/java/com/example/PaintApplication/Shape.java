@@ -2,10 +2,6 @@ package com.example.PaintApplication;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-<<<<<<< Updated upstream
-import jakarta.persistence.*;
-=======
->>>>>>> Stashed changes
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -21,22 +17,12 @@ import java.util.List;
         @JsonSubTypes.Type(value = Rectangle.class, name = "Rectangle"),
         @JsonSubTypes.Type(value = Square.class, name = "Square"),
         @JsonSubTypes.Type(value = Ellipse.class, name = "Ellipse"),
-        @JsonSubTypes.Type(value = LineSegment.class, name = "LineSegment")
+        @JsonSubTypes.Type(value = LineSegment.class, name = "LineSegment"),
+        @JsonSubTypes.Type(value = IsoscelesTriangle.class, name = "IsoscelesTriangle"),
+        @JsonSubTypes.Type(value = EquilateralTriangle.class, name = "EquilateralTriangle"),
+        @JsonSubTypes.Type(value = RightTriangle.class, name = "RightTriangle"),
 })
 
-<<<<<<< Updated upstream
-@Data
-@Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Shape implements Cloneable{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    int x;
-    int y;
-    String color;
-    boolean isVisible;
-=======
 
 public abstract class Shape implements Cloneable {
     int id;
@@ -146,7 +132,6 @@ public abstract class Shape implements Cloneable {
 
     }
 
->>>>>>> Stashed changes
     public abstract String getType();
     public static void setShapes(List<Shape> shapes) {
         shapeList = shapes;
