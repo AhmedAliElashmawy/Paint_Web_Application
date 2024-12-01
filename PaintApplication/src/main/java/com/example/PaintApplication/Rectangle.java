@@ -9,6 +9,14 @@ import lombok.EqualsAndHashCode;
 @Data
 @Entity
 public class Rectangle extends Polygon {
+    private String type;
+    private int x;
+    private int y;
+    private long width;
+    private long height;
+    private String color;
+    private int strokeWidth;
+    private String fill;
 
     public Rectangle() {
         super();

@@ -32,7 +32,7 @@ import lombok.Data;
 public abstract class Shape implements Cloneable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    int id;
     int x;
     int y;
     String color;
@@ -41,11 +41,11 @@ public abstract class Shape implements Cloneable{
      long height;
      int strokeWidth;
      String fill;
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

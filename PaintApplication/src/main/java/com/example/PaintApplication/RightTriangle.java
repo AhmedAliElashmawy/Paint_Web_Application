@@ -7,7 +7,16 @@ import lombok.EqualsAndHashCode;
 @Data
 @Entity
 public class RightTriangle extends Triangle{
-
+    private String type;
+    private double x1;
+    private double y1;
+    private double x2;
+    private double y2;
+    private double x3;
+    private double y3;
+    private String color;
+    private int strokeWidth;
+    private String fill;
     public RightTriangle() {
         super();
     }

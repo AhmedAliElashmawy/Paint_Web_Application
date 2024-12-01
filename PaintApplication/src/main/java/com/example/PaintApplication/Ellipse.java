@@ -6,6 +6,14 @@ import lombok.Data;
 @Data
 @Entity
 public class Ellipse extends EllipticalShape{
+    private String type;
+    private int x;
+    private int y;
+    private String color;
+    private double radius1;
+    private double radius2;
+    private int strokeWidth;
+    private String fill;
 public Ellipse(){
     super();
 }

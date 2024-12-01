@@ -94,6 +94,7 @@ public class ShapeController {
 
     @PostMapping(value="/load")
 public String loadShapes(@RequestParam String format,@RequestBody List<Shape>shapes) {
+    for (Shape i : shapes){System.out.println(i);}
     try {
         if ("json".equalsIgnoreCase(format)) {
             sketchManager.loadSketchFromJSON(shapes);
