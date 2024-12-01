@@ -1,13 +1,14 @@
 package com.example.PaintApplication;
 
-import jakarta.persistence.Entity;
-import lombok.Data;
 
-@Data
-@Entity
 public class Square extends Polygon {
+<<<<<<< Updated upstream
     private double width;
     private double height;
+=======
+    private long width;
+    private long height;
+>>>>>>> Stashed changes
     public Square(){
         super();
     }

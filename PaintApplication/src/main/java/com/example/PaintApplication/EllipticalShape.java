@@ -1,10 +1,5 @@
 package com.example.PaintApplication;
 
-import jakarta.persistence.MappedSuperclass;
-import lombok.Data;
-
-@Data
-@MappedSuperclass
 public abstract class EllipticalShape extends Shape {
     protected double radius1=0.0;
     protected double radius2=0.0;

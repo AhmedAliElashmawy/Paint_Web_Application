@@ -1,5 +1,6 @@
 package com.example.PaintApplication;
 
+<<<<<<< Updated upstream
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -24,12 +25,32 @@ public class ShapeService {
     @ExceptionHandler(RuntimeException.class)
     public String handleNotFoundException(RuntimeException e) {
         return e.getMessage();
+=======
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
+
+@Service
+public class ShapeService {
+
+    private Stack<List<Shape>> undoStack = new Stack<>();
+    private Stack<List<Shape>> redoStack = new Stack<>();
+    private Shape copiedShape = null;
+    // Add a shape to the list
+    public void addShape(Shape shape) {
+        saveStateForUndo();
+        Shape.addShape(shape);
+        redoStack.clear(); // Clear redo stack on new action
+>>>>>>> Stashed changes
     }
 
-    public Shape getShapeById(Long id) {
-        return shapeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Shape not found"));
+    // Get all shapes
+    public List<Shape> getAllShapes() {
+        return Shape.getShapes();
     }
+<<<<<<< Updated upstream
     public Shape saveShape(Shape shape) {
         saveToUndoStack();
         return shapeRepository.save(shape);
@@ -76,31 +97,63 @@ public class ShapeService {
             triangle.setX3((int) (triangle.getX3() * factor));
         }
         return shapeRepository.save(shape);
+=======
+
+    // Clear all shapes
+    public void clearShapes() {
+        saveStateForUndo();
+        Shape.clearShapes();
+        redoStack.clear(); // Clear redo stack on new action
     }
-    public Shape copyShape(Long id) {
-        saveToUndoStack();
-        Shape original = getShapeById(id);
-        Shape copy = null;
-        copy = (Shape) original.clone(); // Deep copy via cloning
-        copy.setId(null); // Reset ID for new entity
-        return shapeRepository.save(copy);
+
+    // Copy a shape
+    public void copyShape(int shapeId) {
+        saveStateForUndo();
+        Shape shapeToCopy = Shape.getShapes().stream()
+                .filter(shape -> shape.getId() == shapeId)
+                .findFirst()
+                .orElse(null);
+        if (shapeToCopy != null) {
+           copiedShape=shapeToCopy.clone();
+           // Clear redo stack on new action
+        }
+
+>>>>>>> Stashed changes
     }
+    public void pasteShape(){
+        if(copiedShape!=null){
+            saveStateForUndo();
+            Shape.addShape(copiedShape.clone());
+            redoStack.clear();
+        }
+    }
+
+    // Undo the last action
     public void undo() {
         if (!undoStack.isEmpty()) {
+<<<<<<< Updated upstream
             redoStack.push((List<Shape>) new ArrayDeque<>(shapeRepository.findAll()));
+=======
+            redoStack.push(new ArrayList<>(Shape.getShapes()));
+>>>>>>> Stashed changes
             List<Shape> previousState = undoStack.pop();
-            shapeRepository.deleteAll();
-            shapeRepository.saveAll(previousState);
+            Shape.setShapes(previousState);
         }
+
     }
+    // Redo the last undone action
     public void redo() {
         if (!redoStack.isEmpty()) {
+<<<<<<< Updated upstream
             undoStack.push((List<Shape>) new ArrayDeque<>(shapeRepository.findAll()));
+=======
+            undoStack.push(new ArrayList<>(Shape.getShapes()));
+>>>>>>> Stashed changes
             List<Shape> nextState = redoStack.pop();
-            shapeRepository.deleteAll();
-            shapeRepository.saveAll(nextState);
+            Shape.setShapes(nextState);
         }
     }
+<<<<<<< Updated upstream
     private void saveToUndoStack() {
         List<Shape> currentShapes = shapeRepository.findAll();
         List<Shape> deepCopy = new ArrayList<>();
@@ -109,5 +162,16 @@ public class ShapeService {
         }
         undoStack.push(deepCopy);
         redoStack.clear();
+=======
+    public void loadShapes(List<Shape> shapes) {
+        saveStateForUndo();
+        Shape.setShapes(new ArrayList<>(shapes)); // Replace the current shapes with the provided shapes
+        redoStack.clear(); // Clear redo stack on new action
+    }
+
+    // Save the current state for undo functionality
+    private void saveStateForUndo() {
+        undoStack.push(new ArrayList<>(Shape.getShapes()));
+>>>>>>> Stashed changes
     }
 }

@@ -1,5 +1,6 @@
 package com.example.PaintApplication;
 
+<<<<<<< Updated upstream
 import jakarta.persistence.Entity;
 import lombok.Data;
 
@@ -9,6 +10,12 @@ public class Rectangle extends Polygon{
     private double width;
     private double height;
     public Rectangle(){
+=======
+
+public class Rectangle extends Polygon {
+
+    public Rectangle() {
+>>>>>>> Stashed changes
         super();
     }
     public Rectangle(int x, int y, String color, boolean isVisible, double width, double height) {

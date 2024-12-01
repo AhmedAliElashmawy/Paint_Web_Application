@@ -1,10 +1,11 @@
 package com.example.PaintApplication;
 
+<<<<<<< Updated upstream
 import jakarta.persistence.MappedSuperclass;
 import lombok.Data;
+=======
+>>>>>>> Stashed changes
 
-@Data
-@MappedSuperclass
 public abstract class Polygon extends Shape {
     protected int sides;
     public Polygon(){
