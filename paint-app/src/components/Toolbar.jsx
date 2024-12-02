@@ -370,7 +370,7 @@ const Toolbar = ({
   const buttonsConfig = {
     menu1: [
       { label: "Save", icon: "/icons/save.svg" },
-      { label: "Load" },
+      { label: "Load", icon: "/icons/load.svg" },
       { label: "Copy", icon: "/icons/copy.svg" },
     ],
     menu2: [
@@ -384,26 +384,26 @@ const Toolbar = ({
       { label: "Airbrush", icon: "/icons/airbrush.png" },
     ],
     menu4: [
-      { label: "Flood" },
+      { label: "Flood" , icon: "/icons/flood.svg" },
       { label: "Brush", icon: "/icons/brush.svg" },
       { label: "Text", icon: "/icons/text.svg" },
     ],
     menu5: [
-      { label: "Outline only" },
-      { label: "Fill" },
-      { label: "Outline and fill" },
+      { label: "Outline only", icon: "/icons/outline.svg" },
+      { label: "Fill", icon: "/icons/fill.svg" },
+      { label: "Outline and fill",},
     ],
   };
 
   const shape = [
-    { id: uuidv4(), label: "Square" },
+    { id: uuidv4(), label: "Square", icon: "/icons/square.svg" },
     { id: uuidv4(), label: "Rectangle", icon: "/icons/rectangle.svg" },
-    { id: uuidv4(), label: "Circle" },
-    { id: uuidv4(), label: "Ellipse" },
-    { id: uuidv4(), label: "LineSegment" },
-    { id: uuidv4(), label: "IsoscelesTriangle" },
-    { id: uuidv4(), label: "EquilateralTriangle" },
-    { id: uuidv4(), label: "RightTriangle" },
+    { id: uuidv4(), label: "Circle", icon: "/icons/circle.svg" },
+    { id: uuidv4(), label: "Ellipse", icon: "/icons/ellipse.svg" },
+    { id: uuidv4(), label: "LineSegment", icon: "/icons/line.svg" },
+    { id: uuidv4(), label: "IsoscelesTriangle", icon: "/icons/iso_triangle.png" },
+    { id: uuidv4(), label: "EquilateralTriangle", icon: "/icons/equi_triangle.svg" },
+    { id: uuidv4(), label: "RightTriangle", icon: "/icons/right_triangle.png" },
   ];
 
   const row1Colors = ["black", "red", "green", "blue", "yellow"];

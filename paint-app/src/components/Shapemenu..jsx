@@ -12,7 +12,11 @@ const Shapemenue = ({ onShapeSelect }) => {
           onClick={() => onShapeSelect(shape)}
           style={{ display: "block", margin: "5px 0" }}
         >
-          {shape}
+          <img
+    src={`/icons/${shape.label.toLowerCase()}.svg`}
+    alt={shape}
+    style={{ width: "20px", height: "20px", marginRight: "10px" }}
+  />{shape}
         </button>
       ))}
     </div>
