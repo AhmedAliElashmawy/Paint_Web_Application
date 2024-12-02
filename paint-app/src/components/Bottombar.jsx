@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
 import "./Bottombar.css";
+import axios from "axios";
 
-const Bottombar = () => {
+
+const Bottombar = (
+  {
+    shapes,
+    setShapes,
+  }
+) => {
   const [zoom, setZoom] = useState(100); // Default zoom level: 100%
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
@@ -46,9 +53,18 @@ const Bottombar = () => {
     setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
 };
 
+const clear = async () => {
+  try {
+    setShapes([]);
+    await axios.post('http://localhost:8080/api/shapes/deletes');
+  } catch (error) {
+    console.error("Error clearing shapes:", error);
+  }
+};
+
   return (
     <div className="bottombar">
-      <button className="clear">
+      <button className="clear" onClick={() => clear()}>
         <img
             src="/icons/clear.svg"
             alt="clear"

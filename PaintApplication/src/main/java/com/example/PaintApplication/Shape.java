@@ -210,7 +210,10 @@ public abstract class Shape implements Cloneable {
     }
     public static void UndoShape() {
         shapeList.removeLast();
+    }
 
+    public static void delete(Shape shape){
+        System.out.println(shapeList.remove(shape));
     }
 
     public abstract String getType();

@@ -97,7 +97,11 @@ function App() {
         selectedPaste={selectedPaste}
         setselectedPaste={setSelectedPaste}
         />
-      <Bottombar/>
+      <Bottombar
+        shapes={shapes}
+        setShapes={setShapes}
+        
+      />
     </div>
   );
 }

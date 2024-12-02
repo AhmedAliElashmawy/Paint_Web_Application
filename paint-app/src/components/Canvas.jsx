@@ -148,16 +148,18 @@ const Canvas = ({
     }
   };
 
-  const handleMouseClick = () => {
-    if (!selectedFloodFill) return;  
-    
-    setShapes((prevShapes) => {
-      return prevShapes.map((shape) => ({
-          ...shape,
-          fill: selectedColor,
-      }));
-  });
-    }
+  const handleMouseClick = (id) => {
+    if (!selectedFloodFill) return;
+  
+    setShapes((prevShapes) =>
+      prevShapes.map((shape) =>
+        shape.id === id
+          ? { ...shape, fill: selectedColor } // Update only the shape with the matching ID
+          : shape
+      )
+    );
+  };
+  
   
 
   const handleMouseMove = async (e) => {
@@ -351,7 +353,7 @@ const Canvas = ({
   const handleSelect = (id) => {
     console.log("l");
     if(selectedFloodFill){
-      handleMouseClick(new MouseEvent("click"),id);
+      handleMouseClick(id);
     }else if(selectedCopy){
       const shapeToCopy = shapes.find((shape) => String(shape.id) === String(id));
       if (shapeToCopy) {
@@ -449,10 +451,14 @@ const Canvas = ({
   
 
 
-  const deleteShape = (id) => {
+  const deleteShape = async (id) => {
     console.log("clickedShape");
+    const newshape = shapes.find((shape) => String(shape.id) === id);
+    console.log(newshape);
     setShapes((prevShapes) => prevShapes.filter((shape) => String(shape.id) !== id));
-  };
+    const apiUrl = `http://localhost:8080/api/shapes/delete`;
+    const response = await axios.post(apiUrl, newshape);
+  }
   const clearAllAirbrushes = () => {
     setShapes((prev) => prev.filter((shape) => String(shape.type) !== "AirBrush"));
   };

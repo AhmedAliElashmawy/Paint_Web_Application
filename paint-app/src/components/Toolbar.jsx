@@ -36,12 +36,12 @@ const Toolbar = ({
 
   const handleColorSelect = (color) => {
     setCurrentColor(color);
-    onColorSelect(color); // Notify parent
+    onColorSelect(color);
   };
 
   const handleSizeChange = (size) => {
     setSelectedWidth(size);
-    onSizeChange(size); // Notify parent
+    onSizeChange(size);
   };
 
   const ColorOptions = ({ colors, onColorSelect }) => (

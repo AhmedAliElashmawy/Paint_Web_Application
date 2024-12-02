@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ShapeService {
-
     private Stack<Shape> undoStack = new Stack<>();
     private Stack<Shape> redoStack = new Stack<>();
     private Shape copiedShape = null;
@@ -28,7 +27,13 @@ public class ShapeService {
     public void clearShapes() {
         Shape.clearShapes();
         redoStack.clear(); // Clear redo stack on new action
+        undoStack.clear(); // Clear redo stack on new action
     }
+
+    // public void clearShape(Shape shape) {
+    //     Shape.delete(shape);
+    //     redoStack.clear();
+    // }
 
     // Copy a shape
     // public void copyShape(String shapeId) {
@@ -50,22 +55,16 @@ public class ShapeService {
     //         redoStack.clear();
     //     }
     // }
-    public void deleteShape(String shapeId) {
-        Shape shapeToDelete = Shape.getShapes().stream()
-        .filter(shape -> shape.getId().equals(shapeId))
-        .findFirst()
-        .orElse(null);
-
-        if (shapeToDelete != null) {
+    public void deleteShape(Shape shape) {
+        Shape.delete(shape);
         // Remove the shape from the list
-        Shape.getShapes().remove(shapeToDelete);
 
         // Save the current state for undo
-        saveStateForUndo(shapeToDelete);
+        saveStateForUndo(shape);
+        System.out.println(shape);
 
         // Clear the redo stack
         redoStack.clear();
-        }
     }
     public Shape undo() {
         if (!undoStack.isEmpty()) {
