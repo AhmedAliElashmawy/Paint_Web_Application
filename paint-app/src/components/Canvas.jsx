@@ -26,6 +26,10 @@ const Canvas = ({
   selectedText,
   textValue,
   setTextValue,
+  selectedCopy,
+  setselectedCopy,
+  selectedPaste,
+  setselectedPaste,
   }) => {
   const [isDrawing, setIsDrawing] = useState(false);
   const [newShape, setNewShape] = useState(null);
@@ -45,6 +49,8 @@ const Canvas = ({
   const [editingText, setEditingText] = useState("");
   const [inputPosition, setInputPosition] = useState({ x: 0, y: 0 });
   const inputRef = useRef(null);
+  const [copyShape, setcopyShape] = useState(null);
+
 
   const handleShapeSelect = async (Shape) => {
     const stage = stageRef.current;
@@ -85,9 +91,6 @@ const Canvas = ({
       if (clickedShape) {
       console.log("clickedShape");
       deleteShape(String(clickedShape));
-      deleteBrush(String(clickedShape));
-      deleteLine(String(clickedShape));
-      deleteAirbrush(String(clickedShape));
       }
     }else if(selectedText){
       const pos = e.target.getStage().getPointerPosition();
@@ -308,12 +311,7 @@ const Canvas = ({
   //   return rootStyles.getPropertyValue('--canvas-bg').trim();
   // };
   const handleMouseUp = async () => {
-    if(selectedRedo){
-      console.log("sss")
-      setShapes([...shapes, RedoShape]);
-      setselectedRedo(false);
-    }
-    else if (isDrawing && selectedPencil ) {
+    if (isDrawing && selectedPencil ) {
       const newLineStroke = {
         id: `${Date.now()}-${Math.random()}`,
           type: "Pencil",
@@ -351,8 +349,20 @@ const Canvas = ({
   };
 
   const handleSelect = (id) => {
+    console.log("l");
     if(selectedFloodFill){
       handleMouseClick(new MouseEvent("click"),id);
+    }else if(selectedCopy){
+      const shapeToCopy = shapes.find((shape) => String(shape.id) === String(id));
+      if (shapeToCopy) {
+        const newShape = {
+          ...shapeToCopy, // Copy all properties of the shape
+          id: `${Date.now()}-${Math.random()}` // Assign a new unique ID
+        };
+        setcopyShape(newShape);
+      }
+      console.log(copyShape);
+      setselectedCopy(false);
     }
     else{
       console.log("gg");
@@ -376,7 +386,7 @@ const Canvas = ({
 
   const handleTransformerChange = (id, node) => {
     const updatedShapes = shapes.map((shape) => {
-      if (Number(shape.id) === Number(id)) {
+      if (String(shape.id) === String(id)) {
         switch (shape.type) {
           case "Rectangle":
           case "Square":
@@ -438,48 +448,36 @@ const Canvas = ({
   };
   
 
-const undo = () => {
-  if(selectedUndo && UndoID > 0){
-    if(UndoShape === "Rectangle"){
-      deleteShape((UndoID));
-    }else{
-      deleteBrush(String(UndoID));
-      deleteLine(String(UndoID));
-      deleteAirbrush(String(UndoID));
-    }
-  }
-  setUndoID(0);
-}
-const redo = () => {
-  // console.log(selectedRedo);
-  if(selectedRedo && UndoID > 0){
-    // console.log("hi");
-    if(RedoShape.id === 2)
-      handleMouseUp();
-    } 
-    setUndoID(0);
-  }
 
   const deleteShape = (id) => {
     console.log("clickedShape");
     setShapes((prevShapes) => prevShapes.filter((shape) => String(shape.id) !== id));
   };
-  const deleteBrush = (id) => {
-    setBLines((prevShapes) => prevShapes.filter((shape) => String(shape.id) !== id));
-  };
-  const deleteLine = (id) => {
-    setLines((prevShapes) => prevShapes.filter((shape) => String(shape.id) !== id));
-  };
-  const deleteAirbrush = (id) => {
-    setAirbrushCircles((prev) => prev.filter((shape) => String(shape.id) !== id));
-  };
   const clearAllAirbrushes = () => {
-    setAirbrushCircles([]);
+    setShapes((prev) => prev.filter((shape) => String(shape.type) !== "AirBrush"));
+  };
+
+  const paste = (e) => {
+    if (selectedPaste) {
+      const pos = e.target.getStage().getPointerPosition();
+      
+      // Create a new copy of the shape with updated position
+      const newShape = {
+        ...copyShape, // Copy all properties of the shape
+        x: pos.x,     // Update x position
+        y: pos.y,      // Update y position
+        id: `${Date.now()}-${Math.random()}`,
+      };
+      console.log(newShape);
+      // Add the new shape to the shapes array
+      setShapes([...shapes, newShape]);
+      handleShapeSelect(newShape);
+      // Reset selectedPaste
+      setselectedPaste(false);
+    }
   };
 
   return (
-    undo(),
-    redo(),
     <Stage
       ref={stageRef}
       width={1919}
@@ -491,6 +489,7 @@ const redo = () => {
         // Deselect if clicked outside
         if (e.target === e.target.getStage()) {
           setSelectedId(null);
+          paste(e);
           // if(selectedText){
           // handleTextClick(e);
           // }
@@ -555,6 +554,7 @@ const redo = () => {
             strokeWidth={shape.strokeWidth}
             lineCap="round"
             lineJoin="round"
+            onClick={() => handleSelect(String(shape.id))} // Pass ID as a string
         />
             );
           }

@@ -38,24 +38,26 @@ public class ShapeController {
     }
 
     // Copy a shape
-    @PostMapping("/copy/{id}")
-    public void copyShape(@PathVariable int id) {
-        shapeService.copyShape(id);
-    }
-    @PostMapping("/paste")
-    public void pasteShape() {
-        shapeService.pasteShape();
-    }
+    // @PostMapping("/copy/{id}")
+    // public void copyShape(@PathVariable int id) {
+    //     shapeService.copyShape(id);
+    // }
+    // @PostMapping("/paste")
+    // public void pasteShape() {
+    //     shapeService.pasteShape();
+    // }
     // Undo the last action
     @PostMapping("/undo")
-    public void undo() {
-        shapeService.undo();
+    public Shape undo() {
+        Shape shape = shapeService.undo();
+        return shape;
     }
 
     // Redo the last undone action
     @PostMapping("/redo")
-    public void redo() {
-        shapeService.redo();
+    public Shape redo() {
+        Shape shape = shapeService.redo();
+        return shape;
     }
     @PostMapping("/load")
     public void loading(@RequestBody List<Shape> shapes) {

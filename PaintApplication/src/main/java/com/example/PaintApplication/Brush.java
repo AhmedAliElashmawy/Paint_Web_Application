@@ -4,35 +4,39 @@ package com.example.PaintApplication;
 import java.util.List;
 
 
-public class PencilandBrush implements Cloneable{
-    private Long id;
+public class Brush extends Shape{
+    private String id;
 
     private String type;
-    private List<Double> points;
+    private List<Integer> points;
     private String color;
-    private double strokeWidth;
+    private int strokeWidth;
 
-    public Long getId() {
+    public Brush(){
+        super();
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
     public String getType() {
-        return type;
+        return "Brush";
     }
 
     public void setType(String type) {
         this.type = type;
     }
 
-    public List<Double> getPoints() {
+    public List<Integer> getPoints() {
         return points;
     }
 
-    public void setPoints(List<Double> points) {
+    public void setPoints(List<Integer> points) {
         this.points = points;
     }
 
@@ -44,19 +48,15 @@ public class PencilandBrush implements Cloneable{
         this.color = color;
     }
 
-    public double getStrokeWidth() {
+    public int getStrokeWidth() {
         return strokeWidth;
     }
 
-    public void setStrokeWidth(double strokeWidth) {
+    public void setStrokeWidth(int strokeWidth) {
         this.strokeWidth = strokeWidth;
     }
     public Shape clone() {
-        try {
-            return (Shape) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException("Cloning failed for shape: " + getType());
-        }
+        return (Shape) super.clone();
     }
     // Getters and setters
 }

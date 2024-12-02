@@ -20,6 +20,9 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = IsoscelesTriangle.class, name = "IsoscelesTriangle"),
         @JsonSubTypes.Type(value = EquilateralTriangle.class, name = "EquilateralTriangle"),
         @JsonSubTypes.Type(value = RightTriangle.class, name = "RightTriangle"),
+        @JsonSubTypes.Type(value = Brush.class, name = "Brush"),
+        @JsonSubTypes.Type(value = Pencil.class, name = "Pencil"),
+        @JsonSubTypes.Type(value = AirBrush.class, name = "AirBrush"),
 })
 
 
@@ -41,6 +44,7 @@ public abstract class Shape implements Cloneable {
     int y2;
     int x3;
     int y3;
+    double opacity;
 
     public String getId() {
         return id;
@@ -169,6 +173,13 @@ public abstract class Shape implements Cloneable {
     public void sety3(int y3) {
         this.y3 = y3;
     }
+    public double getOpacity() {
+        return opacity;
+    }
+
+    public void setOpacity(double opacity) {
+        this.opacity = opacity;
+    }
 
     public static List<Shape> getShapeList() {
         return shapeList;
@@ -195,6 +206,10 @@ public abstract class Shape implements Cloneable {
 
     public static void clearShapes() {
         shapeList.clear();
+
+    }
+    public static void UndoShape() {
+        shapeList.removeLast();
 
     }
 

@@ -27,6 +27,8 @@ const Toolbar = ({
   setSelectedText,
   textValue,
   setTextValue,
+  setselectedCopy,
+  setselectedPaste,
 }) => {
   const [selectedWidth, setSelectedWidth] = useState(selectedSize || 1);
   const [currentColor, setCurrentColor] = useState(selectedColor || "#000000");
@@ -207,6 +209,8 @@ const Toolbar = ({
     setselectedUndo(false);
     setselectedRedo(false);
     setSelectedText(false);
+    setselectedCopy(false);
+    setselectedPaste(false);
     switch (button) {
       case "Text":
       setTextInputVisible(true);
@@ -243,35 +247,17 @@ const Toolbar = ({
   
       case "Save":
       saveAsFile(shapes);
-    //   try {
-    //     const response = await axios.post('http://localhost:8080/api/shapes/save', null, {
-    //         params: {
-    //             format: "json", // Specify format
-    //             filePath: "C:/Temp/sketch.json"
-    //             }
-    //     });
-    //     console.log('Shapes saved successfully:', response.data);
-    // } catch (error) {
-    //     console.error('Did not save');
-    //     if (error.response) {
-    //         console.error('Server responded with error:', error.response.data);
-    //     } else {
-    //         console.error('Error:', error.message);
-    //     }
-    // }
     break;
 
     case "Load":
       loadFile();
-
     break;
 
     case "Undo":
       setselectedUndo(true);
       try{
       const response = await axios.post('http://localhost:8080/api/shapes/undo')
-      setUndoID(2);
-      setUndoShape("Rectangle");
+      setShapes((prevShapes) => prevShapes.filter((shape) => String(shape.id) !== String(response.data.id)));
       console.log('Shapes undo successfully:');
     }catch (error){
       console.error('Server responded with error:', error.response.data);
@@ -281,20 +267,8 @@ const Toolbar = ({
       case "Redo":
         setselectedRedo(true);
         try{
-          const response = await axios.post('http://localhost:8080/api/shapes/redo')
-          setUndoID(2);
-          const initialShape = {
-            id: String(2), // Ensure ID is a string
-            type: "Rectangle",
-            x: 200,
-            y: 200,
-            width: 100,
-            height: 200,
-            color: "black",
-            fill: "transparent",
-            strokeWidth: 2,
-          };
-          setRedoShape(initialShape);
+          const response = await axios.post('http://localhost:8080/api/shapes/redo');
+          setShapes([...shapes, response.data]);
         console.log('Shapes redo successfully:');
       }catch (error){
         console.error('Server responded with error:', error.response.data);
@@ -302,14 +276,12 @@ const Toolbar = ({
         break;
 
       case "Copy":
-        // setselectedUndo(true);
-        try{
-        await axios.post('http://localhost:8080/api/shapes/copy')
-        console.log('Shapes redo successfully:');
-      }catch (error){
-        console.error('Server responded with error:', error.response.data);
-      }
+        setselectedCopy(true);
         break;
+
+        case "Paste":
+          setselectedPaste(true);
+          break;
 
         default:
         console.warn(`Unknown button action: ${button}`);
@@ -335,7 +307,7 @@ const Toolbar = ({
             style={styles.button}
             title={shap.label}
           >
-            {shape.icon ? (
+            {shap.icon ? (
               <img
                 src={shap.icon}
                 alt={shap.label}
@@ -499,6 +471,10 @@ const styles = {
     fontSize: "13px",
     textAlign: "center",
     cursor: "pointer",
+    display: "flex", // Flexbox container
+    alignItems: "center", // Vertically align content to the center
+    justifyContent: "flex-start", // Horizontally align content to the left
+    padding: "4.44px", // Optional, adjust as needed for spacing
   },
 };
 

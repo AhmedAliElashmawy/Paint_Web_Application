@@ -18,6 +18,8 @@ function App() {
   const [selectedAirbrush, setSelectedAirbrush] = useState(false);
   const [selectedFloodFill, setSelectedFloodFill] = useState(false);
   const [selectedUndo, setSelectedUndo] = useState(false);
+  const [selectedCopy, setSelectedCopy] = useState(false);
+  const [selectedPaste, setSelectedPaste] = useState(false);
   const [UndoID, setUndoID] = useState(0);
   const [UndoShape, setUndoShape] = useState("");
   const [selectedRedo, setSelectedRedo] = useState(false);
@@ -61,6 +63,10 @@ function App() {
         selectedText={selectedText}
         textValue={textValue}
         setTextValue={setTextValue}
+        selectedCopy={selectedCopy}
+        setselectedCopy={setSelectedCopy}
+        selectedPaste={selectedPaste}
+        setselectedPaste={setSelectedPaste}
         />
       <Canvas
         shapes={shapes}
@@ -86,6 +92,10 @@ function App() {
         selectedText={selectedText}
         textValue={textValue}
         setTextValue={setTextValue}
+        selectedCopy={selectedCopy}
+        setselectedCopy={setSelectedCopy}
+        selectedPaste={selectedPaste}
+        setselectedPaste={setSelectedPaste}
         />
       <Bottombar/>
     </div>
